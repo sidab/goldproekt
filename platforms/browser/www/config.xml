@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.goldproekt.com" version="1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Голд Проект</name>
+    <description>
+        Приложение строительной компании Голд Проект.
+    </description>
+    <author email="umakhanr7@yandex.ru" href="https://sidab.ru">Umakhan Magomedov</author>
+    <icon src="www/icon.png" />
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-navigation href="*" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="fullscreen" value="false" />
+    <preference name="orientation" value="portrait" />
+    <preference name="BackgroundColor" value="0xeeeeeeee" />
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
+    <preference name="FadeSplashScreen" value="false" />
+    <preference name="SplashScreenBackgroundColor" value="0xeeeeeeee" />
+    <preference name="phonegap-version" value="cli-8.1.1" />
+</widget>

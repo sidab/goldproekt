@@ -1,0 +1,176 @@
+<template>
+
+    <div class="page">
+
+        <div class="navbar">
+
+            <div class="navbar-inner sliding">
+
+                <div class="left">
+
+                    <a href="/" class="link back">
+
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Назад</span>
+
+                    </a>
+
+                </div>
+
+                <div class="title">Ход строительства</div>
+
+            </div>
+
+        </div>
+
+        <div class="page-content">
+
+
+            <div class="block">
+
+                <div class="row">
+
+                    {{#each projectPhotos}}
+
+                        <div class="col-50 photo">
+
+                            {{#js_if "this.video.length > 0" }}
+
+                                <img data-index="{{@index}}" class="elevation-3 lazy lazy-fade-in save-to-cache" data-date="{{created_at}}" data-video="{{ video }}" data-src="http://img.youtube.com/vi/{{ video }}/0.jpg" width="100%">
+
+                                <i class="icon material-icons md-only text-color-orange">play_circle_outline</i>
+                                <i class="icon f7-icons ios-only text-color-orange">play_round</i>
+
+                            {{else}}
+
+                                <img data-index="{{@index}}" class="elevation-3 lazy lazy-fade-in" data-date="{{created_at}}" data-img="{{js "app.methods.getFullLink(this.image)" }}" data-src="{{js "app.methods.getFullLink(this.image)" }}" width="100%">
+
+                            {{/js_if}}
+
+                        </div>
+
+                    {{/each}}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<style scoped>
+
+
+    {{this}} .photo {
+        position: relative;
+        min-height: 50px;
+    }
+
+    {{this}} .photo i {
+                 width: 100%;
+                 display: block;
+                 text-align: center;
+                 position: absolute;
+                 top: 37%;
+                 font-size: 35px;
+             }
+
+</style>
+
+<script>
+
+    return {
+
+        data: function () {
+
+        },
+        methods: {
+
+        },
+        on: {
+
+            pageInit: function() {
+
+                var page = this.$el;
+
+                app.methods.cacheImages(true);
+
+                var photos = [];
+
+                page.find('img').each(function() {
+
+                    var caption = $$(this).data('title') + ' от ' + $$(this).data('date');
+
+                    if ($$(this).data('video') !== undefined) {
+
+                        photos.push({
+                            html: '<iframe src="https://www.youtube.com/embed/'+ $$(this).data('video') +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                            caption: caption
+                        });
+
+                    } else {
+
+                        photos.push({
+                            url: $$(this).data('img'),
+                            caption: caption
+                        });
+
+                    }
+
+                });
+
+                var resizeIframe = function (photoBrowser) {
+
+                    var width = $$(photoBrowser.$el).width();
+                    var height = +width - (width / 3) +'px';
+
+                    $$(photoBrowser.$el).find('iframe').css('max-height', height);
+
+                };
+
+                var photoBrowserBuildingProcess = app.photoBrowser.create({
+                    photos: photos,
+                    theme: 'dark',
+                    routableModals: false,
+                    swiper: {
+                        zoom: {
+                            maxRatio: 15
+                        }
+                    },
+                    on: {
+                        open: function() {
+
+                            resizeIframe(this);
+
+                        },
+                        slideChange: function() {
+
+                            resizeIframe(this);
+
+                        }
+                    }
+                });
+
+                page.find('.photo').on('click', function() {
+
+                    var index = parseInt($$(this).find('img').data('index'));
+
+                    photoBrowserBuildingProcess.open(index);
+
+                });
+
+            },
+            pageAfterIn: function () {
+
+                app.lazy.load('.lazy');
+
+            }
+
+        }
+
+    }
+
+</script>

@@ -1,0 +1,150 @@
+<template>
+
+    <div class="page">
+
+        <div class="navbar">
+
+            <div class="navbar-inner sliding">
+
+                <div class="title">Полезные статьи</div>
+
+            </div>
+
+        </div>
+
+        <div class="page-content">
+
+            <div class="row no-gap">
+
+                {{#each articles}}
+
+                    <div @click="openArticle({{id}})" class="col-100 tablet-50 item margin-bottom">
+
+                        <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
+
+                            <div class="card-header align-items-flex-end text-color-white no-padding">
+
+                                <img data-src="{{image}}" class="lazy lazy-fade-in save-to-cache" width="100%">
+
+                            </div>
+
+                            <div class="card-content card-content-padding">
+
+                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{{ title }}</b></div>
+
+                                <div class="text-color-gray">
+
+                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{{ published_at }}</small></div>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                {{/each}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<style scoped>
+
+    {{this}} .item i {
+        font-size: 14px;
+        padding-right: 5px;
+    }
+
+
+</style>
+
+<script>
+
+    return {
+
+        data: function () {
+
+            return {
+
+                articles: function () {
+
+                    var component = this;
+
+                    if (localStorage.articles !== undefined) {
+
+                        var articles = JSON.parse(localStorage.articles);
+
+                    } else {
+
+                        var articles = component.loadArticles();
+
+                    }
+
+                    return articles;
+
+                }
+
+            }
+
+        },
+        methods: {
+            loadArticles: function () {
+
+                var articles = false;
+
+                app.request({
+                    url: encodeURI(app.params.backend + '/api/articles'),
+                    cache: false,
+                    async: false,
+                    dataType: 'json',
+                    preloader: true,
+                    success: function(response) {
+
+                        localStorage.articles = JSON.stringify(response.data);
+
+                        articles = response.data;
+
+                    }
+                });
+
+                return articles;
+
+            },
+            openArticle: function (id) {
+
+                var component = this;
+                var articles = this.articles();
+                var article = articles.filter(function(v) {return v.id === id})[0];
+
+                app.view.current.router.navigate('/articles/article', {
+                    context: article
+                });
+
+
+            }
+        },
+        on: {
+
+            pageInit: function() {
+
+                var page = this.$el;
+
+                $$('#view-articles').on('tab:show', function () {
+
+                    app.methods.cacheImages(true);
+
+                });
+
+            }
+
+        }
+
+    }
+
+</script>
