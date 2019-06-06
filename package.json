@@ -10,10 +10,12 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-crosswalk-webview": {}
+      "cordova-plugin-crosswalk-webview": {},
+      "cordova-android-support-gradle-release": {}
     }
   },
   "dependencies": {
+    "cordova-android-support-gradle-release": "3.0.0",
     "cordova-browser": "^5.0.4",
     "cordova-plugin-crosswalk-webview": "2.4.0",
     "cordova-plugin-inappbrowser": "3.0.0",

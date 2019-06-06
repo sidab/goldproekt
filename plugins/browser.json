@@ -18,6 +18,9 @@
     },
     "cordova-plugin-crosswalk-webview": {
       "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-android-support-gradle-release": {
+      "PACKAGE_NAME": "com.goldproekt.com"
     }
   },
   "dependent_plugins": {}

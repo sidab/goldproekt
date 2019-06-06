@@ -65,4 +65,5 @@
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="2.4.0" />
+    <plugin name="cordova-android-support-gradle-release" spec="3.0.0" />
 </widget>
