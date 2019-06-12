@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'auto',
-    version: 1.0,
+    version: 1.1,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -19,19 +19,14 @@ var app = new Framework7({
         fastClicks: true
     },
     view: {
-        stackPages: true,
         mdSwipeBack: true,
         animate: false,
-        xhrCacheDuration: 1000 * 60 * 1000,
-        //preloadPreviousPage: false,
-        removeElements: false,
-        unloadTabContent: false,
         iosDynamicNavbar: false,
         iosPageLoadDelay: 100,
-        mdPageLoadDelay: 100
+        mdPageLoadDelay: 100,
     },
     lazy: {
-        threshold: 500
+        threshold: 1500
     },
     panel: {
         //swipe: 'left'
@@ -40,10 +35,19 @@ var app = new Framework7({
         backLinkText: 'Закрыть',
         navbarOfText: 'из'
     },
+    cacheImages: [],
     methods: {
       getFullLink: function (path) {
 
           var url = app.params.backend + '/storage/app/media' + path;
+
+          var index = app.params.cacheImages.findIndex(image => image.src == url);
+
+          if (index !== -1) {
+
+              url = app.params.cacheImages[index].url;
+
+          }
 
           return url;
 
@@ -135,44 +139,73 @@ var app = new Framework7({
           });
 
       },
-      cacheImages: function (lazy = false) {
+      cacheImages: function () {
 
           $$('.save-to-cache').each(function (i) {
 
               var image = $$(this);
+              var src;
 
-              var src = lazy ? image.data('src') : image.attr('src');
+              if (image.data('src') !== undefined) {
 
-              localforage.getItem(src, function (error, value) {
+                  src = image.data('src');
 
-                  if (value !== null) {
+              } else {
 
-                      var url = URL.createObjectURL(value)
+                  src = image.attr('src');
 
-                      image.attr('src', url);
+              }
 
-                  }
+              if (src.indexOf('blob') !== -1) {
 
-              });
+                  return true;
 
-          });
+              }
 
-          $$('.save-to-cache').each(function (i) {
+              var index = app.params.cacheImages.findIndex(image => image.src == src);
 
-              var image = $$(this);
-              var src = lazy ? image.data('src') : image.attr('src');
+              if (index !== -1) {
 
-              app.request({
-                  url: src,
-                  xhrFields:{
-                      responseType: 'blob'
-                  },
-                  success: function(response) {
+                  var url = app.params.cacheImages[index].url;
 
-                      localforage.setItem(src, response);
+              } else {
 
-                  }
-              });
+                  setTimeout(function () {
+
+                      localforage.getItem(src, function (error, value) {
+
+                          if (value !== null) {
+
+                              var url = URL.createObjectURL(value)
+
+                              app.params.cacheImages.push({
+                                  url: url,
+                                  src: src
+                              });
+
+                          } else {
+
+                              app.request({
+                                  url: src,
+                                  xhrFields:{
+                                      responseType: 'blob'
+                                  },
+                                  success: function(response) {
+
+                                      localforage.setItem(src, response);
+
+                                  }
+                              });
+
+                          }
+
+                      });
+
+                  }, i * 1000);
+
+              }
+
+              image.removeClass('save-to-cache');
 
           });
 
@@ -185,16 +218,24 @@ var app = new Framework7({
 
             app.methods.checkVersion();
 
-            app.on('lazyLoaded', function (image) {
+            localforage.iterate(function(value, key, iterationNumber) {
 
-                setTimeout(function () {
+                if (key.indexOf('http') !== -1) {
 
-                    $$(image).removeClass('lazy-fade-in');
+                    var url = URL.createObjectURL(value)
 
-                }, 500);
+                    app.params.cacheImages.push({
+                        url: url,
+                        src: key
+                    });
+
+                }
+
+            }).then(function() {
+
+                app.emit('images:ready');
 
             });
-
 
         }
     }
@@ -228,34 +269,48 @@ app.request.setup({
     }
 });
 
-app.views.create('#view-projects', {
-    url: '/projects',
-    main: true
-});
+app.on('images:ready', function () {
 
-app.views.create('#view-beton', {
-    url: '/beton'
-});
+    app.views.create('#view-projects', {
+        url: '/projects',
+        main: true
+    });
 
-app.views.create('#view-building-process', {
-    url: '/building-process'
-});
+    app.views.create('#view-beton', {
+        url: '/beton'
+    });
 
-app.views.create('#view-articles', {
-    url: '/articles'
-});
+    app.views.create('#view-building-process', {
+        url: '/building-process'
+    });
 
-app.views.create('#view-contacts', {
-    url: '/contacts'
+    app.views.create('#view-articles', {
+        url: '/articles'
+    });
+
+    app.views.create('#view-contacts', {
+        url: '/contacts'
+    });
+
 });
 
 $$(document).on('deviceready', function () {
+
+    app.on('images:ready', function () {
+
+        setTimeout(function () {
+
+            navigator.splashscreen.hide();
+
+        }, 2000);
+
+    });
 
     setTimeout(function () {
 
         navigator.splashscreen.hide();
 
-    }, 1000);
+    }, 3000);
 
     viewUrls = [];
 

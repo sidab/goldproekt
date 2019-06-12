@@ -173,7 +173,17 @@
                 var photoBrowserApartaments = app.photoBrowser.create({
                     photos: apartaments,
                     theme: 'dark',
-                    routableModals: false
+                    routableModals: false,
+                    type: 'page',
+                    lazy: {
+                        enabled: false,
+                    },
+                    swiper: {
+                        lazy: false,
+                        zoom: {
+                            maxRatio: 10
+                        }
+                    }
                 });
 
                 page.find('img').on('click', function() {
@@ -203,7 +213,17 @@
                 var photoBrowserApartamentsFloor = app.photoBrowser.create({
                     photos: apartamentsFloor,
                     theme: 'dark',
-                    routableModals: false
+                    routableModals: false,
+                    type: 'page',
+                    lazy: {
+                        enabled: false,
+                    },
+                    swiper: {
+                        lazy: false,
+                        zoom: {
+                            maxRatio: 10
+                        }
+                    }
                 });
 
                 page.find('.floor-image').on('click', function() {

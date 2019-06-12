@@ -30,12 +30,6 @@
 
                     <div class="swiper-slide">
 
-                        <iframe data-src="https://www.youtube.com/embed/9Y-NAOpdGeE?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-                    </div>
-
-                    <div class="swiper-slide">
-
                         <img data-index="0" src="img/beton/1.jpg" width="100%">
 
                     </div>
@@ -96,6 +90,16 @@
             </div>
 
             <small class="display-block text-align-center text-color-gray">Нажмите на фото для увелечения</small>
+
+            <div class="block-title block-title-large">Видео</div>
+
+            <div class="block block-strong text-align-center">
+
+                <div class="preloader center"></div>
+
+                <iframe class="display-none" src="https://www.youtube.com/embed/9Y-NAOpdGeE?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+            </div>
 
             <div class="block-title block-title-medium">Цены на бетон компании «Голд Проект»</div>
 
@@ -280,14 +284,9 @@
 
                 $$('#view-beton').once('tab:show', function () {
 
-                    var src = page.find('iframe').data('src');
-
-                    page.find('iframe').attr('src', src);
-
                     component.resizeIframe();
 
                     var betonSlider = new Swiper(page.find('.beton-slider'), {
-                        effect: 'coverflow',
                         pagination: {
                             el: '.swiper-pagination',
                             type: 'fraction'
@@ -316,11 +315,17 @@
                                     photos: images,
                                     theme: 'dark',
                                     routableModals: false,
+                                    type: 'page',
+                                    lazy: {
+                                        enabled: false,
+                                    },
                                     swiper: {
+                                        lazy: false,
                                         zoom: {
                                             maxRatio: 10
                                         }
-                                    }
+                                    },
+                                    view: app.views.get('#view-beton'),
                                 });
 
                                 swiper.find('img').on('click', function() {

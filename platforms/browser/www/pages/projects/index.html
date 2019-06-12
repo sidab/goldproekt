@@ -125,7 +125,7 @@
 
                 var component = this;
                 var projects = this.projects();
-                var project = projects.filter(function(v) {return v.id === id})[0];
+                var project = projects.find(function(v) {return v.id === id});
 
                 project['images'] = [];
 
@@ -233,8 +233,6 @@
             pageInit: function() {
 
                 var page = this.$el;
-
-                app.methods.cacheImages();
 
             }
 

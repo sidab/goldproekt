@@ -198,7 +198,7 @@
 
                                 <div class="swiper-slide">
 
-                                    <div class="amenity-image elevation-5 lazy lazy-fade-in elevation-pressed-15 elevation-hover-10" data-background="{{js "app.methods.getFullLink(this.image)" }}"></div>
+                                    <div class="amenity-image elevation-5 elevation-pressed-15 elevation-hover-10" style="background-image: url({{js "app.methods.getFullLink(this.image)" }})"></div>
 
                                     <div class="item-title padding-top">{{title}}</div>
 
@@ -410,7 +410,6 @@
                 var page = component.$el;
 
                 var projectSlider = new Swiper(page.find('.project-slider'), {
-                    effect: 'coverflow',
                     pagination: {
                         el: '.swiper-pagination',
                         type: 'fraction'
@@ -433,7 +432,12 @@
                                 photos: images,
                                 theme: 'dark',
                                 routableModals: false,
+                                type: 'page',
+                                lazy: {
+                                    enabled: false,
+                                },
                                 swiper: {
+                                    lazy: false,
                                     zoom: {
                                         maxRatio: 10
                                     }
