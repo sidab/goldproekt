@@ -169,7 +169,17 @@
                 var photoBrowserCommerce = app.photoBrowser.create({
                     photos: commerce,
                     theme: 'dark',
-                    routableModals: false
+                    routableModals: false,
+                    type: 'page',
+                    lazy: {
+                        enabled: false,
+                    },
+                    swiper: {
+                        lazy: false,
+                        zoom: {
+                            maxRatio: 10
+                        }
+                    }
                 });
 
                 page.find('img').on('click', function() {

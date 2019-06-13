@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'auto',
-    version: 1.1,
+    version: 1.2,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -24,6 +24,7 @@ var app = new Framework7({
         iosDynamicNavbar: false,
         iosPageLoadDelay: 100,
         mdPageLoadDelay: 100,
+        stackPages: true
     },
     lazy: {
         threshold: 1500
@@ -35,17 +36,18 @@ var app = new Framework7({
         backLinkText: 'Закрыть',
         navbarOfText: 'из'
     },
-    cacheImages: [],
+    cachedImages: [],
+    toCacheImages: [],
     methods: {
       getFullLink: function (path) {
 
           var url = app.params.backend + '/storage/app/media' + path;
 
-          var index = app.params.cacheImages.findIndex(image => image.src == url);
+          var index = app.params.cachedImages.findIndex(image => image.src == url);
 
           if (index !== -1) {
 
-              url = app.params.cacheImages[index].url;
+              url = app.params.cachedImages[index].url;
 
           }
 
@@ -139,9 +141,9 @@ var app = new Framework7({
           });
 
       },
-      cacheImages: function () {
+      addImagesToCache: function(el) {
 
-          $$('.save-to-cache').each(function (i) {
+          $$(el).find('.save-to-cache').each(function (i) {
 
               var image = $$(this);
               var src;
@@ -162,52 +164,85 @@ var app = new Framework7({
 
               }
 
-              var index = app.params.cacheImages.findIndex(image => image.src == src);
+              var index = app.params.cachedImages.findIndex(image => image.src == src);
+              var index2 = app.params.toCacheImages.indexOf(src);
 
-              if (index !== -1) {
+              if (index == -1 && index == -1) {
 
-                  var url = app.params.cacheImages[index].url;
-
-              } else {
-
-                  setTimeout(function () {
-
-                      localforage.getItem(src, function (error, value) {
-
-                          if (value !== null) {
-
-                              var url = URL.createObjectURL(value)
-
-                              app.params.cacheImages.push({
-                                  url: url,
-                                  src: src
-                              });
-
-                          } else {
-
-                              app.request({
-                                  url: src,
-                                  xhrFields:{
-                                      responseType: 'blob'
-                                  },
-                                  success: function(response) {
-
-                                      localforage.setItem(src, response);
-
-                                  }
-                              });
-
-                          }
-
-                      });
-
-                  }, i * 1000);
+                  app.params.toCacheImages.push(src);
 
               }
 
-              image.removeClass('save-to-cache');
-
           });
+
+      },
+      cacheImages: function () {
+
+          var app = this;
+          var images = app.params.toCacheImages;
+
+          if (images.length == 0 ) {
+
+              return;
+
+          }
+
+          var success = function (blob, image) {
+
+              var url = URL.createObjectURL(blob)
+
+              app.params.cachedImages.push({
+                  url: url,
+                  src: image
+              });
+
+              var length = app.params.toCacheImages.length - 1;
+              var index = app.params.toCacheImages.indexOf(image);
+
+              app.params.toCacheImages.splice(index, 1);
+
+          };
+
+          var check = function (image) {
+
+              localforage.getItem(image).then(function(value) {
+
+                  console.log(image);
+
+                  if (value !== null) {
+
+                      success(value, image);
+
+                  } else {
+
+                      app.request({
+                          url: image,
+                          xhrFields: {
+                              responseType: 'blob'
+                          },
+                          success: function (response) {
+
+                              localforage.setItem(image, response);
+
+                              success(response, image);
+
+                          }
+                      });
+
+                  }
+
+              });
+
+          };
+
+          for (var i = 0; i < images.length; i++) {
+
+              var image = images[i];
+
+              check(image);
+
+          }
+
 
       }
     },
@@ -224,7 +259,7 @@ var app = new Framework7({
 
                     var url = URL.createObjectURL(value)
 
-                    app.params.cacheImages.push({
+                    app.params.cachedImages.push({
                         url: url,
                         src: key
                     });
@@ -236,6 +271,12 @@ var app = new Framework7({
                 app.emit('images:ready');
 
             });
+
+            setInterval(function () {
+
+                app.methods.cacheImages();
+
+            }, 15000);
 
         }
     }

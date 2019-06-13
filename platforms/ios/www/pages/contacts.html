@@ -1,0 +1,294 @@
+<template>
+
+    <div class="page">
+
+        <div class="navbar">
+
+            <div class="navbar-inner sliding">
+
+                <div class="title">Наши контакты</div>
+
+            </div>
+
+        </div>
+
+        <div class="fab fab-extended fab-center-bottom">
+
+            <a @click="call" href="#">
+                <i class="icon f7-icons ios-only">phone</i>
+                <i class="icon material-icons md-only">phone</i>
+                <div class="fab-text">Позвонить</div>
+            </a>
+
+        </div>
+
+        <div class="page-content">
+
+            <img src="img/banner.png" width="100%">
+
+            <div class="block-title block-title-medium"><h2>Главный офис</h2></div>
+
+            <div class="list">
+
+                <ul>
+
+                    <li>
+
+                        <div class="item-content">
+
+                            <div class="item-inner">
+
+                                <div class="item-title">Телефон</div>
+
+                                <div class="item-after">
+
+                                    <a class="external" target="_system" href="tel:+79887972888">+7 (988) 797 28 88</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                    <li>
+
+                        <div class="item-content">
+
+                            <div class="item-inner">
+
+                                <div class="item-title">Доп. телефон</div>
+
+                                <div class="item-after">
+
+                                    <a class="external" target="_system" href="tel:+79288650888">+7 (928) 865 08 88</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                    <li>
+
+                        <div class="item-content">
+
+                            <div class="item-inner">
+
+                                <div class="item-title">Email</div>
+
+                                <div class="item-after">
+
+                                    <a class="external" target="_system" href="mailto:info@goldproekt.com">info@goldproekt.com</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                    <li>
+
+                        <div class="item-content">
+
+                            <div class="item-inner">
+
+                                <div class="item-title">Доп. Email</div>
+
+                                <div class="item-after">
+
+                                    <a class="external" target="_system" href="mailto:goldproekt@mail.ru">goldproekt@mail.ru</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                    <li>
+
+                        <div class="item-content">
+
+                            <div class="item-inner">
+
+                                <div class="item-title">График</div>
+
+                                <div class="item-after">c 9:00 до 18:00 Пн-Сб</div>
+
+                            </div>
+
+                        </div>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="block-title block-title-medium">Наши социальные сети</div>
+
+            <div class="list no-margin-bottom">
+
+                <ul itemscope itemtype="https://schema.org/Organization">
+
+                    <li>
+
+                        <a itemprop="sameAs" href="https://instagram.com/goldproekt" target="_system" class="external item-link item-content panel-close">
+
+                            <div class="item-media">
+                                <img width="29" src="img/icons/instagram.png">
+                            </div>
+
+                            <div class="item-inner">
+
+                                <div class="item-title">instagram</div>
+
+                            </div>
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a itemprop="sameAs" href="https://www.youtube.com/channel/UCj3R-4zF5i3J2lDpZY6HoJQ/" target="_system" class="external item-link item-content panel-close">
+
+                            <div class="item-media">
+                                <img width="29" src="img/icons/youtube.png">
+                            </div>
+
+                            <div class="item-inner">
+
+                                <div class="item-title">YouTube</div>
+
+                            </div>
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <a itemprop="sameAs" href="https://wa.me/79285722402" target="_system" class="external item-link item-content panel-close">
+
+                            <div class="item-media">
+                                <img width="29" src="img/icons/whatsapp.png">
+                            </div>
+
+                            <div class="item-inner">
+
+                                <div class="item-title">WhatsApp</div>
+
+                            </div>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="block-title block-title-medium"><h2>Офис на карте</h2></div>
+
+            <div class="block block-strong no-margin-bottom">
+
+                <p>Адрес: г. Хасавюрт, улица С-М. Абубакарова (Фабричная), 55</p>
+
+            </div>
+
+            <div class="block block-strong no-margin-top text-align-center">
+
+                <div class="preloader center"></div>
+
+                <iframe data-src="https://yandex.ru/map-widget/v1/?um=constructor%3A6816c4729d5bb49b491c49496b2c74ca11ff4bf326ddc6ad1ec95205cbdc7db8&amp;source=constructor" class="display-none" width="100%" height="400" frameborder="0"></iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<style scoped>
+
+</style>
+
+<script>
+
+    return {
+
+        data: function () {
+
+            return {
+
+            }
+
+        },
+        methods: {
+
+            call: function() {
+
+                window.open('tel:+79887972888', '_system');
+
+            },
+            resizeIframe: function () {
+
+                var page = this.$el;
+                var pageContentWidth = page.find('.page-content').width();
+                var iframeHeight = +pageContentWidth - (pageContentWidth / 3) +'px';
+                var iframeBlockHeight = +pageContentWidth - (pageContentWidth / 2) +'px';
+
+                page.find('iframe').css('height', iframeHeight);
+
+                page.find('iframe').parent().css('min-height', iframeBlockHeight);
+
+                page.find('iframe').on('load', function() {
+
+                    $$(this).removeClass('display-none');
+                    $$(this).prev().hide();
+
+                });
+
+                setTimeout(function() {
+
+                    page.find('iframe').removeClass('display-none');
+                    page.find('iframe').prev().hide();
+
+                }, 5000);
+
+            }
+
+        },
+        on: {
+
+            pageInit: function() {
+
+                var component = this;
+                var page = component.$el;
+
+                $$('#view-contacts').once('tab:show', function () {
+
+                    var src = page.find('iframe').data('src');
+
+                    page.find('iframe').attr('src', src);
+
+                    component.resizeIframe();
+
+                });
+
+            }
+
+        }
+
+    }
+
+</script>

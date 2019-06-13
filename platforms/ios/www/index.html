@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        <title>Голд Проект</title>
+
+        <link rel="apple-touch-icon" href="icon.png" />
+        <link rel="stylesheet" href="css/framework7.min.css">
+        <link rel="stylesheet" href="css/icons.css">
+        <link rel="stylesheet" href="css/app.css">
+
+    </head>
+
+    <body>
+
+        <div id="app">
+
+            <div class="statusbar"></div>
+
+            <div class="views tabs safe-areas">
+
+                <div class="toolbar tabbar-labels toolbar-bottom toolbar-menu">
+
+                    <div class="toolbar-inner">
+
+                        <a href="#view-projects" class="tab-link tab-link-active">
+
+                            <i class="icon material-icons md-only">location_city</i>
+                            <i class="icon f7-icons ios-only">business</i>
+                            <span class="tabbar-label">Проекты</span>
+
+                        </a>
+
+                        <a href="#view-beton" class="tab-link">
+
+                            <i class="icon material-icons md-only">invert_colors</i>
+                            <i class="icon f7-icons ios-only">bars_chart</i>
+                            <span class="tabbar-label">Бетон</span>
+
+                        </a>
+
+                        <a href="#view-building-process" class="tab-link">
+
+                            <i class="icon material-icons md-only">collections</i>
+                            <i class="icon f7-icons ios-only">images</i>
+                            <span class="tabbar-label">Фото и Видео</span>
+
+                        </a>
+
+                        <a href="#view-articles" class="tab-link">
+
+                            <i class="icon material-icons md-only">description</i>
+                            <i class="icon f7-icons ios-only">document_text</i>
+                            <span class="tabbar-label">Статьи</span>
+
+                        </a>
+
+                        <a href="#view-contacts" class="tab-link">
+
+                            <i class="icon material-icons md-only">local_phone</i>
+                            <i class="icon f7-icons ios-only">phone</i>
+                            <span class="tabbar-label">Контакты</span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="tab view tab-active" id="view-projects"></div>
+                <div class="tab view" id="view-beton"></div>
+                <div class="tab view" id="view-building-process"></div>
+                <div class="tab view" id="view-articles"></div>
+                <div class="tab view" id="view-contacts"></div>
+
+            </div>
+
+        </div>
+
+        <script src="cordova.js"></script>
+        <script src="js/framework7.min.js"></script>
+        <script src="js/localforage.min.js" defer></script>
+        <script src="js/routes.js" defer></script>
+        <script src="js/app.js" defer></script>
+
+    </body>
+
+</html>

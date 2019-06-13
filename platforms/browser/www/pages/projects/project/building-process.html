@@ -36,7 +36,7 @@
 
                             {{#js_if "this.video.length > 0" }}
 
-                                <img data-index="{{@index}}" class="elevation-3 lazy lazy-fade-in save-to-cache" data-date="{{created_at}}" data-video="{{ video }}" data-src="http://img.youtube.com/vi/{{ video }}/0.jpg" width="100%">
+                                <img data-index="{{@index}}" class="elevation-3 lazy save-to-cache" data-date="{{created_at}}" data-video="{{ video }}" data-src="http://img.youtube.com/vi/{{ video }}/0.jpg" width="100%">
 
                                 <i class="icon material-icons md-only text-color-orange">play_circle_outline</i>
                                 <i class="icon f7-icons ios-only text-color-orange">play_round</i>
@@ -135,7 +135,12 @@
                     photos: photos,
                     theme: 'dark',
                     routableModals: false,
+                    type: 'page',
+                    lazy: {
+                        enabled: false,
+                    },
                     swiper: {
+                        lazy: false,
                         zoom: {
                             maxRatio: 15
                         }

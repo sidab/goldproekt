@@ -1,0 +1,80 @@
+<template>
+
+    <div class="page">
+
+        <div class="navbar">
+
+            <div class="navbar-inner sliding">
+
+                <div class="left">
+
+                    <a href="#" class="link back">
+
+                        <i class="icon icon-back"></i>
+                        <span class="ios-only">Назад</span>
+
+                    </a>
+
+                </div>
+
+                <div class="title">Статья</div>
+
+            </div>
+
+        </div>
+
+        <div class="page-content">
+
+            <img src="{{ image }}"width="100%">
+
+            <div class="block block-title-medium">{{title}}</div>
+
+            <div class="block block-strong">{{ content }}</div>
+
+            <div class="block">
+
+                <small class="text-color-gray">
+
+                    <i class="icon material-icons md-only">today</i>
+                    <i class="icon f7-icons ios-only">calendar</i>
+                    {{ published_at }}
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<style scoped>
+
+</style>
+
+<script>
+
+    return {
+
+        data: function () {
+
+            return {
+
+            }
+
+        },
+        methods: {
+
+        },
+        on: {
+
+            pageInit: function() {
+
+            }
+
+        }
+
+    }
+
+</script>

@@ -28,14 +28,14 @@
 
                                     <div class="overlay"></div>
 
-                                    <img data-index="{{@index}}" data-video="{{ video }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}} save-to-cache" width="100%">
+                                    <img data-index="{{@index}}" data-video="{{ video }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}}" width="100%">
 
                                     <i class="icon material-icons md-only text-color-orange">play_circle_outline</i>
                                     <i class="icon f7-icons ios-only text-color-orange">play_round</i>
 
                                 {{else}}
 
-                                    <img data-index="{{@index}}" data-image="{{js "app.methods.getFullLink(this.image)" }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="{{js "app.methods.getFullLink(this.image)" }}" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}} save-to-cache" width="100%">
+                                    <img data-index="{{@index}}" data-image="{{js "app.methods.getFullLink(this.image)" }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="{{js "app.methods.getFullLink(this.image)" }}" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}}" width="100%">
 
                                 {{/js_if}}
 
