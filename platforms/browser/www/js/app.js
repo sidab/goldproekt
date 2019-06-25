@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'auto',
-    version: 1.2,
+    version: 1.4,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -276,7 +276,7 @@ var app = new Framework7({
 
                 app.methods.cacheImages();
 
-            }, 15000);
+            }, 30000);
 
         }
     }

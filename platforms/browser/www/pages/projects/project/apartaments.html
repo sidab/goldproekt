@@ -65,13 +65,19 @@
 
         <div class="page-content">
 
+            {{#js_if "this.korpus.length > 0"}}
+
+                <img class="korpus" src="{{js "app.methods.getFullLink(this.korpus)"}}" width="100%">
+
+            {{/js_if}}
+
             <div class="block-title block-title-medium">ВСЕ КВАРТИРЫ ДОСТУПНЫ В РАССРОЧКУ</div>
 
             <div class="block-title no-margin-top">Цена за м²: {{js "this.apartaments_price.toLocaleString('ru-RU')"}}₽</div>
 
             <div class="block">
 
-                <button class="button button-raised button-fill button-large margin-top color-deeporange sheet-open" data-sheet=".sheet-filter">Показать фильтр</button>
+                <button class="button button-raised button-fill button-large margin-top color-deeporange sheet-open" data-sheet=".sheet-filter">Подобрать квартиру</button>
 
             </div>
 
@@ -87,7 +93,7 @@
 
                                 <div class="card-header align-items-flex-end text-color-white no-padding">
 
-                                    <img width="100%" class="save-to-cache" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-caption="{{rooms}} комнатная; Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" data-img="{{js "app.methods.getFullLink(this.image)" }}" src="{{js "app.methods.getFullLink(this.image)" }}">
+                                    <img width="100%" class="save-to-cache" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-caption="{{rooms}} комнатная; {{#js_if "this.korpus.length > 0"}}Корпус: {{korpus}}; {{/js_if}}Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" src="{{js "app.methods.getFullLink(this.image)" }}">
 
                                 </div>
 
@@ -105,8 +111,15 @@
 
                                     <div class="text-color-gray">
 
-                                        <h4><div>Площадь: <span class="item-area">{{area}}</span> кв.м</div></h4>
-                                        <h4><div>Цена: <span class="item-price">{{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}</span>₽</div></h4>
+                                        <div>Площадь: <span class="item-area">{{area}}</span> кв.м</div>
+
+                                        {{#js_if "this.korpus.length > 0"}}
+
+                                            <div>Корпус: <span class="item-korpus">{{korpus}}</span></div>
+
+                                        {{/js_if}}
+
+                                        <div>Цена: <span class="item-price">{{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}</span>₽</div>
 
                                     </div>
 
@@ -159,10 +172,10 @@
 
                 var apartaments = [];
 
-                page.find('img').each(function() {
+                page.find('.item').find('img').each(function() {
 
                     apartaments.push({
-                        url: $$(this).data('img'),
+                        url: $$(this).attr('src'),
                         caption: $$(this).data('caption'),
                         floor: $$(this).data('floor'),
                         id: $$(this).parents('.item').data('id')
@@ -186,7 +199,7 @@
                     }
                 });
 
-                page.find('img').on('click', function() {
+                page.find('.item').find('img').on('click', function() {
 
                     var index = parseInt($$(this).data('index'));
 
@@ -219,10 +232,7 @@
                         enabled: false,
                     },
                     swiper: {
-                        lazy: false,
-                        zoom: {
-                            maxRatio: 10
-                        }
+                        lazy: false
                     }
                 });
 
@@ -233,6 +243,18 @@
                     var index = apartamentsFloor.map(function (img) { return img.id}).indexOf(id);
 
                     photoBrowserApartamentsFloor.open(index);
+
+                });
+
+                var photoBrowserKorpus = app.photoBrowser.create({
+                    photos: [page.find('.korpus').attr('src')],
+                    theme: 'dark',
+                    type: 'standalone'
+                });
+
+                page.find('.korpus').on('click', function() {
+
+                    photoBrowserKorpus.open(0);
 
                 });
 
