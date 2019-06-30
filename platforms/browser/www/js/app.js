@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'auto',
-    version: 1.4,
+    version: 1.5,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -48,6 +48,10 @@ var app = new Framework7({
           if (index !== -1) {
 
               url = app.params.cachedImages[index].url;
+
+          } else {
+
+              app.params.toCacheImages.push(url);
 
           }
 
@@ -141,45 +145,10 @@ var app = new Framework7({
           });
 
       },
-      addImagesToCache: function(el) {
-
-          $$(el).find('.save-to-cache').each(function (i) {
-
-              var image = $$(this);
-              var src;
-
-              if (image.data('src') !== undefined) {
-
-                  src = image.data('src');
-
-              } else {
-
-                  src = image.attr('src');
-
-              }
-
-              if (src.indexOf('blob') !== -1) {
-
-                  return true;
-
-              }
-
-              var index = app.params.cachedImages.findIndex(image => image.src == src);
-              var index2 = app.params.toCacheImages.indexOf(src);
-
-              if (index == -1 && index == -1) {
-
-                  app.params.toCacheImages.push(src);
-
-              }
-
-          });
-
-      },
       cacheImages: function () {
 
           var app = this;
-          var images = app.params.toCacheImages;
+          var images = app.params.toCacheImages.slice(0, 10);
 
           if (images.length == 0 ) {
 
@@ -207,8 +176,6 @@ var app = new Framework7({
 
               localforage.getItem(image).then(function(value) {
 
-                  console.log(image);
-
                   if (value !== null) {
 
                       success(value, image);
@@ -216,7 +183,7 @@ var app = new Framework7({
                   } else {
 
                       app.request({
-                          url: image,
+                          url: encodeURI(image),
                           xhrFields: {
                               responseType: 'blob'
                           },
@@ -276,7 +243,7 @@ var app = new Framework7({
 
                 app.methods.cacheImages();
 
-            }, 30000);
+            }, 15000);
 
         }
     }

@@ -465,7 +465,7 @@
                         $$(this).attr('src', $$(this).data('src'));
                     });
 
-                }, 5000);
+                }, 3000);
 
                 var videoSlider = new Swiper(page.find('.video-slider'), {
                     effect: 'coverflow',
@@ -493,8 +493,6 @@
                     page.find('.show-more').remove();
 
                 });
-
-                app.methods.addImagesToCache(page);
 
             },
             pageBeforeOut: function () {

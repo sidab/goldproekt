@@ -67,7 +67,7 @@
 
             {{#js_if "this.korpus.length > 0"}}
 
-                <img class="korpus" src="{{js "app.methods.getFullLink(this.korpus)"}}" width="100%">
+                <img class="korpus save-to-cache" src="{{js "app.methods.getFullLink(this.korpus)"}}" width="100%">
 
             {{/js_if}}
 
@@ -346,7 +346,11 @@
                             sheet.find('.button-filter').off('click').on('click', function() {
 
                                 var filterItems = component.apartaments.filter(function(item) {
+
+                                    item.price = item.area * component.apartaments_price;
+
                                     return item.rooms >= rangeSliderRooms.getValue()[0] && item.rooms <= rangeSliderRooms.getValue()[1] && item.area >= rangeSliderArea.getValue()[0] && item.area <= rangeSliderArea.getValue()[1] && item.price >= rangeSliderPrice.getValue()[0] && item.price <= rangeSliderPrice.getValue()[1];
+
                                 });
 
                                 page.find('.item').addClass('display-none');
