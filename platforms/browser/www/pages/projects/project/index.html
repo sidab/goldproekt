@@ -31,9 +31,9 @@
 
                     {{#each images}}
 
-                        <div class="swiper-slide bg-color-white">
+                        <div data-index="{{@index}}" class="swiper-slide swiper-lazy bg-color-white" data-background="{{ this }}">
 
-                            <img class="save-to-cache" src="{{js "app.methods.getFullLink(this)" }}" data-index="{{@index}}" width="100%">
+                            <div class="swiper-lazy-preloader preloader"></div>
 
                         </div>
 
@@ -44,8 +44,6 @@
                 <div class="swiper-pagination text-color-white"></div>
 
             </div>
-
-            <small class="display-block text-align-center text-color-gray">Нажмите на фото для увелечения</small>
 
             {{#js_if "this.apartaments.length > 0 || this.commerce.length > 0 || this.projectPhotos.length > 0" }}
 
@@ -226,7 +224,7 @@
 
                             {{#each video}}
 
-                                <div class="swiper-slide">
+                                <div class="swiper-slide block-iframe">
 
                                     <div class="preloader center"></div>
 
@@ -265,7 +263,7 @@
 
                 </div>
 
-                <div class="block no-margin-top block-strong text-align-center">
+                <div class="block no-margin-top block-iframe block-strong text-align-center">
 
                     <div class="preloader center"></div>
 
@@ -283,9 +281,19 @@
 
 <style scoped>
 
-    {{this}} .project-slider {
-        min-height: 200px;
-    }
+    {{this}} .project-slider .swiper-slide {
+                 height: var(--iframe-and-slider-height);
+                 background-repeat: no-repeat;
+                 background-position: center;
+                 background-size: cover;
+             }
+
+    {{this}} iframe {
+                 height: 100%;
+             }
+    {{this}} .block-iframe {
+                 height: var(--iframe-and-slider-height);
+             }
 
     {{this}} .project-slider .swiper-pagination, .video-slider .swiper-pagination {
         text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
@@ -373,32 +381,6 @@
                     context: component.project
                 });
 
-            },
-            resizeIframe: function () {
-
-                var page = this.$el;
-                var pageContentWidth = page.find('.page-content').width();
-                var iframeHeight = +pageContentWidth - (pageContentWidth / 3) +'px';
-                var iframeBlockHeight = +pageContentWidth - (pageContentWidth / 2) +'px';
-
-                page.find('iframe').css('height', iframeHeight);
-
-                page.find('iframe').parent().css('min-height', iframeBlockHeight);
-
-                page.find('iframe').on('load', function() {
-
-                    $$(this).removeClass('display-none');
-                    $$(this).prev().hide();
-
-                });
-
-                setTimeout(function() {
-
-                    page.find('iframe').removeClass('display-none');
-                    page.find('iframe').prev().hide();
-
-                }, 5000);
-
             }
 
         },
@@ -414,37 +396,21 @@
                         el: '.swiper-pagination',
                         type: 'fraction'
                     },
+                    lazy: {
+                      loadPrevNext: true
+                    },
                     on: {
                         init: function() {
 
                             var swiper = this.$el;
                             var images = [];
 
-                            swiper.find('img').each(function () {
-
-                                var src = $$(this).attr('src');
-
-                                images.push(src);
-
-                            });
-
                             var photoBrowser = app.photoBrowser.create({
-                                photos: images,
-                                theme: 'dark',
-                                routableModals: false,
-                                type: 'page',
-                                lazy: {
-                                    enabled: false,
-                                },
-                                swiper: {
-                                    lazy: false,
-                                    zoom: {
-                                        maxRatio: 10
-                                    }
-                                }
+                                photos: component.images,
+                                theme: 'dark'
                             });
 
-                            swiper.find('img').on('click', function() {
+                            swiper.find('.swiper-slide').on('click', function() {
 
                                 var index = parseInt($$(this).data('index'));
 
@@ -456,13 +422,30 @@
                     }
                 });
 
-                component.resizeIframe();
+                iframeLoadTimeout = setTimeout(function () {
 
-                videoLoadTimeout = setTimeout(function () {
+                    page.find('.block-iframe').each(function () {
 
-                    page.find('iframe').each(function () {
+                        var iframe = $$(this).find('iframe');
+                        var preloader = $$(this).find('.preloader');
+                        var src = iframe.data('src');
 
-                        $$(this).attr('src', $$(this).data('src'));
+                        iframe.attr('src', src);
+
+                        preloader.addClass('display-none');
+                        iframe.removeClass('display-none');
+
+                        setTimeout(function () {
+
+                            iframe.on('load', function () {
+
+                                preloader.addClass('display-none');
+                                iframe.removeClass('display-none');
+
+                            });
+
+                        }, 3000);
+
                     });
 
                 }, 3000);
@@ -495,9 +478,43 @@
                 });
 
             },
+            pageReinit: function() {
+
+                var component = this;
+                var page = component.$el;
+
+                iframeLoadTimeout = setTimeout(function () {
+
+                    page.find('.block-iframe').each(function () {
+
+                        var iframe = $$(this).find('iframe');
+                        var preloader = $$(this).find('.preloader');
+                        var src = iframe.data('src');
+
+                        iframe.attr('src', src);
+
+                        preloader.addClass('display-none');
+                        iframe.removeClass('display-none');
+
+                        setTimeout(function () {
+
+                            iframe.on('load', function () {
+
+                                preloader.addClass('display-none');
+                                iframe.removeClass('display-none');
+
+                            });
+
+                        }, 3000);
+
+                    });
+
+                }, 3000);
+
+            },
             pageBeforeOut: function () {
 
-                clearTimeout(videoLoadTimeout);
+                clearTimeout(iframeLoadTimeout);
 
             }
 

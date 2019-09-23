@@ -1,6 +1,6 @@
 <template>
 
-    <div class="page">
+    <div class="page" data-name="projects">
 
         <div class="navbar">
 
@@ -14,28 +14,34 @@
 
         <div class="page-content">
 
-            <div class="row no-gap">
+            <div class="block block-preloader text-align-center">
 
-                {{#each projects}}
+                <div class="preloader"></div>
 
-                    <div class="col-100 tablet-33 item margin-bottom">
+            </div>
 
-                        <a @click="project({{id}})" href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
+            <div class="row no-gap display-none items">
 
-                            <div class="card-header align-items-flex-end text-color-white no-padding">
+            </div>
 
-                                <img class="save-to-cache" src="{{js "app.methods.getFullLink(this.image1)" }}" width="100%">
+            <script id="template" type="text/template7">
 
-                            </div>
+                {#each this}
+
+                    <div data-id="{id}" class="col-100 tablet-50 item">
+
+                        <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
+
+                            <div class="card-header align-items-flex-end text-color-white no-padding lazy" data-background="{image}"></div>
 
                             <div class="card-content card-content-padding">
 
-                                <div class="item-title"><b class="block-title block-title-medium no-margin">{{ name }}</b></div>
+                                <div class="item-title"><b class="block-title block-title-medium no-margin">{ name }</b></div>
 
                                 <div class="text-color-gray">
 
-                                    <div><i class="icon material-icons md-only">place</i><i class="icon f7-icons ios-only">placemark</i><small>{{ location }}</small></div>
-                                    <div>{{ description }}</div>
+                                    <div><i class="icon material-icons md-only">place</i><i class="icon f7-icons ios-only">placemark</i><small>{ location }</small></div>
+                                    <div>{ description }</div>
 
                                 </div>
 
@@ -45,9 +51,9 @@
 
                     </div>
 
-                {{/each}}
+                {/each}
 
-            </div>
+            </script>
 
         </div>
 
@@ -66,6 +72,14 @@
                  border: 5px solid;
              }
 
+    {{this}} .item .card-header {
+        background-repeat: no-repeat;
+                 height: 230px;
+        background-color: #eee;
+        background-position: center;
+        background-size: cover;
+                 border-radius: 0px;
+             }
 </style>
 
 <script>
@@ -101,128 +115,183 @@
 
             loadProjects: function () {
 
-                var projects = false;
+                var component = this;
+                var page = this.$el;
 
                 app.request({
                     url: encodeURI(app.params.backend + '/api/projects'),
-                    cache: false,
-                    async: false,
                     dataType: 'json',
-                    preloader: true,
                     success: function(response) {
 
                         localStorage.projects = JSON.stringify(response);
 
-                        projects = response;
+                        component.renderProjects(response);
+
+                    },
+                    error: function () {
+
+                        if (localStorage.projects !== undefined) {
+
+                            var projects = JSON.parse(localStorage.projects);
+
+                            component.renderProjects(projects);
+
+                        }
 
                     }
                 });
 
-                return projects;
-
             },
-            project: function (id) {
+            renderProjects: function (projects) {
 
                 var component = this;
-                var projects = this.projects();
-                var project = projects.find(function(v) {return v.id === id});
+                var page = this.$el;
 
-                project['images'] = [];
+                var template = page.find('#template').html();
 
-                if (project.image1 !== '') {
+                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
 
-                    project.images.push(project.image1);
+                var compiledTemplate = Template7.compile(template);
+                var context = [];
 
-                }
+                for (var i = 0; i < projects.length; i++) {
 
-                if (project.image2 !== '') {
+                    var project = projects[i];
 
-                    project.images.push(project.image2);
+                    var id = project.id;
+                    var name = project.name;
+                    var location = project.location;
+                    var description = project.description;
+                    var image = app.methods.getFullLink(project.image1);
 
-                }
-
-                if (project.image3 !== '') {
-
-                    project.images.push(project.image3);
-
-                }
-
-                if (project.image4 !== '') {
-
-                    project.images.push(project.image4);
-
-                }
-
-                if (project.image5 !== '') {
-
-                    project.images.push(project.image5);
+                    context.push({
+                        id: id,
+                        name: name,
+                        location: location,
+                        description: description,
+                        image: image
+                    });
 
                 }
 
-                if (project.image6 !== '') {
+                var html = compiledTemplate(context);
 
-                    project.images.push(project.image6);
+                page.find('.items').html(html);
 
-                }
+                page.find('.items').removeClass('display-none');
+                page.find('.block-preloader').addClass('display-none');
 
-                if (project.image7 !== '') {
+                app.lazy.create(page.find('.page-content'));
 
-                    project.images.push(project.image7);
+                page.find('.item').on('click', function () {
 
-                }
+                    var projects = JSON.parse(localStorage.projects);
+                    var id = $$(this).data('id');
 
-                if (project.image8 !== '') {
+                    var project = projects.filter(function (project) {
 
-                    project.images.push(project.image8);
+                        return project.id == id;
 
-                }
+                    })[0];
 
-                if (project.image9 !== '') {
+                    project['images'] = [];
 
-                    project.images.push(project.image9);
+                    if (project.image1 !== '') {
 
-                }
+                        project.images.push(app.methods.getFullLink(project.image1));
 
-                if (project.image10 !== '') {
-
-                    project.images.push(project.image10);
-
-                }
-
-                if (project.image11 !== '') {
-
-                    project.images.push(project.image11);
-
-                }
-
-                if (project.image12 !== '') {
-
-                    project.images.push(project.image12);
-
-                }
-
-                if (project.image13 !== '') {
-
-                    project.images.push(project.image13);
-
-                }
-
-                if (project.image14 !== '') {
-
-                    project.images.push(project.image14);
-
-                }
-
-                if (project.image15 !== '') {
-
-                    project.images.push(project.image15);
-
-                }
-
-                app.view.current.router.navigate('/projects/project', {
-                    context: {
-                        project: project
                     }
+
+                    if (project.image2 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image2));
+
+                    }
+
+                    if (project.image3 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image3));
+
+                    }
+
+                    if (project.image4 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image4));
+
+                    }
+
+                    if (project.image5 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image5));
+
+                    }
+
+                    if (project.image6 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image6));
+
+                    }
+
+                    if (project.image7 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image7));
+
+                    }
+
+                    if (project.image8 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image8));
+
+                    }
+
+                    if (project.image9 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image9));
+
+                    }
+
+                    if (project.image10 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image10));
+
+                    }
+
+                    if (project.image11 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image11));
+
+                    }
+
+                    if (project.image12 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image12));
+
+                    }
+
+                    if (project.image13 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image13));
+
+                    }
+
+                    if (project.image14 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image14));
+
+                    }
+
+                    if (project.image15 !== '') {
+
+                        project.images.push(app.methods.getFullLink(project.image15));
+
+                    }
+
+                    app.view.current.router.navigate('/projects/project', {
+                        context: {
+                            project: project
+                        }
+                    });
+
                 });
 
             }
@@ -232,7 +301,10 @@
 
             pageInit: function() {
 
+                var component = this;
                 var page = this.$el;
+
+                component.loadProjects();
 
             }
 

@@ -67,7 +67,7 @@
 
             {{#js_if "this.korpus.length > 0"}}
 
-                <img class="korpus save-to-cache" src="{{js "app.methods.getFullLink(this.korpus)"}}" width="100%">
+                <div class="korpus lazy" data-background="{{js "app.methods.getFullLink(this.korpus)"}}"></div>
 
             {{/js_if}}
 
@@ -91,11 +91,7 @@
 
                             <div class="card no-margin">
 
-                                <div class="card-header align-items-flex-end text-color-white no-padding">
-
-                                    <img width="100%" class="save-to-cache" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-caption="{{rooms}} комнатная; {{#js_if "this.korpus.length > 0"}}Корпус: {{korpus}}; {{/js_if}}Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" src="{{js "app.methods.getFullLink(this.image)" }}">
-
-                                </div>
+                                <div class="card-header lazy align-items-flex-end text-color-white no-padding" data-image="{{js "app.methods.getFullLink(this.image)" }}" data-background="{{js "app.methods.getFullLink(this.image)" }}" data-caption="{{rooms}} комнатная; {{#js_if "this.korpus.length > 0"}}Корпус: {{korpus}}; {{/js_if}}Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-index="{{@index}}"></div>
 
                                 <div class="card-content card-content-padding">
 
@@ -145,6 +141,22 @@
 
 <style scoped>
 
+    {{this}} .item .card-header {
+        background-repeat: no-repeat;
+        height: 230px;
+        background-color: #fff;
+        background-position: center;
+        background-size: auto 100%;
+        border-radius: 0px;
+    }
+
+    {{this}} .korpus {
+                 height: var(--iframe-and-slider-height);
+                 background-position: center;
+                 background-size: auto 100%;
+                 background-repeat: no-repeat;
+        background-color:#eee
+             }
 </style>
 
 <script>
@@ -168,14 +180,12 @@
                 var component = this;
                 var page = this.$el;
 
-                app.methods.cacheImages();
-
                 var apartaments = [];
 
-                page.find('.item').find('img').each(function() {
+                page.find('.item').find('.card-header').each(function() {
 
                     apartaments.push({
-                        url: $$(this).attr('src'),
+                        url: $$(this).data('image'),
                         caption: $$(this).data('caption'),
                         floor: $$(this).data('floor'),
                         id: $$(this).parents('.item').data('id')
@@ -185,21 +195,10 @@
 
                 var photoBrowserApartaments = app.photoBrowser.create({
                     photos: apartaments,
-                    theme: 'dark',
-                    routableModals: false,
-                    type: 'page',
-                    lazy: {
-                        enabled: false,
-                    },
-                    swiper: {
-                        lazy: false,
-                        zoom: {
-                            maxRatio: 10
-                        }
-                    }
+                    theme: 'dark'
                 });
 
-                page.find('.item').find('img').on('click', function() {
+                page.find('.item').find('.card-header').on('click', function() {
 
                     var index = parseInt($$(this).data('index'));
 
@@ -226,14 +225,7 @@
                 var photoBrowserApartamentsFloor = app.photoBrowser.create({
                     photos: apartamentsFloor,
                     theme: 'dark',
-                    routableModals: false,
-                    type: 'page',
-                    lazy: {
-                        enabled: false,
-                    },
-                    swiper: {
-                        lazy: false
-                    }
+                    routableModals: false
                 });
 
                 page.find('.floor-image').on('click', function() {

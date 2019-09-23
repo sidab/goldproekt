@@ -3,8 +3,8 @@ var $$ = Dom7;
 var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
-    theme: 'auto',
-    version: 1.5,
+    theme: 'ios',
+    version: 2.0,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -19,18 +19,14 @@ var app = new Framework7({
         fastClicks: true
     },
     view: {
-        mdSwipeBack: true,
         animate: false,
         iosDynamicNavbar: false,
-        iosPageLoadDelay: 100,
-        mdPageLoadDelay: 100,
+        //iosPageLoadDelay: 100,
+        //mdPageLoadDelay: 100,
         stackPages: true
     },
     lazy: {
         threshold: 1500
-    },
-    panel: {
-        //swipe: 'left'
     },
     photoBrowser: {
         backLinkText: 'Закрыть',
@@ -39,39 +35,39 @@ var app = new Framework7({
     cachedImages: [],
     toCacheImages: [],
     methods: {
-      getFullLink: function (path) {
+        getFullLink: function (path) {
 
-          var url = app.params.backend + '/storage/app/media' + path;
+            var url = app.params.backend + '/storage/app/media' + path;
 
-          var index = app.params.cachedImages.findIndex(image => image.src == url);
+            var index = app.params.cachedImages.findIndex(image => image.src == url);
 
-          if (index !== -1) {
+            if (index !== -1) {
 
-              url = app.params.cachedImages[index].url;
+                url = app.params.cachedImages[index].url;
 
-          } else {
+            } else {
 
-              app.params.toCacheImages.push(url);
+                app.params.toCacheImages.push(url);
 
-          }
+            }
 
-          return url;
+            return url;
 
-      },
-      priceFormat: function(price) {
+        },
+        priceFormat: function(price) {
 
-        if (price >= 1000000) {
+            if (price >= 1000000) {
 
-            return (price / 1000000).toFixed(3) +' млн.';
+                return (price / 1000000).toFixed(3) +' млн.';
 
-        } else {
+            } else {
 
-            return price;
+                return price;
 
-        }
+            }
 
-      },
-      checkVersion: function () {
+        },
+        checkVersion: function () {
 
           var app = this;
 
@@ -144,11 +140,11 @@ var app = new Framework7({
               }
           });
 
-      },
-      cacheImages: function () {
+        },
+        cacheImages: function () {
 
           var app = this;
-          var images = app.params.toCacheImages.slice(0, 10);
+          var images = app.params.toCacheImages.slice(0, 5);
 
           if (images.length == 0 ) {
 
@@ -210,8 +206,68 @@ var app = new Framework7({
 
           }
 
+        },
+        backButton: function (closeApp = true) {
 
-      }
+            if (closeApp) {
+
+                if (app.views.current.router.url === '/projects' || app.views.current.router.url === '/beton' || app.views.current.router.url === '/building-process' || app.views.current.router.url === '/articles' || app.views.current.router.url === '/contacts') {
+
+                    app.dialog.confirm('Вы уверены что хотите закрыть приложение?', function () {
+
+                        navigator.app.exitApp();
+
+                    });
+
+                    return false;
+
+                }
+
+            }
+
+            if ($$('.popover.modal-in').length > 0) {
+
+                var popover;
+
+                if ($$('.popover.modal-in').length > 1) {
+
+                    popover = app.popover.get($$('.popover.modal-in:last-child'));
+
+                } else {
+
+                    popover = app.popover.get($$('.popover.modal-in'));
+
+                }
+
+                popover.close();
+
+                return false;
+
+            }
+
+            if ($$('.popup.modal-in').length > 0) {
+
+                var popup;
+
+                if ($$('.popup.modal-in').length > 1) {
+
+                    popup = app.popup.get($$('.popup.modal-in:last-child'));
+
+                } else {
+
+                    popup = app.popup.get($$('.popup.modal-in'));
+
+                }
+
+                popup.close();
+
+                return false;
+
+            }
+
+            app.views.current.router.back();
+
+        }
     },
     on: {
         init: function () {
@@ -241,39 +297,33 @@ var app = new Framework7({
 
             setInterval(function () {
 
-                app.methods.cacheImages();
+                if (lazyLoadInerval) {
 
-            }, 15000);
+                    app.methods.cacheImages();
+
+                }
+
+            }, 5000);
 
         }
     }
 }).init();
 
 app.request.setup({
-    preloader: false,
     beforeSend: function(xhr) {
 
-        preloaderTimeout = setTimeout(function() {
-
-            if (xhr.requestParameters.preloader) {
-
-                app.preloader.show();
-
-            }
-
-        }, 1000);
+        lazyLoadInerval = false;
 
     },
     complete: function(xhr) {
 
-        app.preloader.hide();
-        clearTimeout(preloaderTimeout);
+        lazyLoadInerval = true;
 
-        //console.log(xhr);
+        console.log(xhr);
 
     },
     error: function () {
-        //app.dialog.alert('Проверьте подключение к интернету!', 'Ошибка');
+
     }
 });
 
@@ -301,86 +351,55 @@ app.on('images:ready', function () {
     });
 
 });
-
 $$(document).on('deviceready', function () {
-
-    app.on('images:ready', function () {
-
-        setTimeout(function () {
-
-            navigator.splashscreen.hide();
-
-        }, 2000);
-
-    });
 
     setTimeout(function () {
 
         navigator.splashscreen.hide();
 
-    }, 3000);
+    }, 1000);
 
-    viewUrls = [];
+    lazyLoadInerval = true;
 
-    for (var i = 0; i < app.views.length; i++) {
-        viewUrls.push(app.views[i].params.url);
-    }
+    setInterval(function () {
 
-    $$(window).on('panel:opened photobrowser:opened', function (event) {
+        if (lazyLoadInerval) {
 
-        $$(document).on('backbutton', function () {
+            app.lazy.load('.lazy');
 
-            var photoBrowser = app.photoBrowser.get($$(event.target));
+        }
 
-            if (photoBrowser !== undefined) {
+    }, 1000);
 
-                photoBrowser.close();
+    $$(document).on('backbutton', function (event) {
 
-            } else {
+        app.methods.backButton();
 
-                app.panel.close('right', false);
+    });
+
+    $$(document).on('tab:show', function () {
+
+        var first = true;
+
+        $$(document).off('click', '.toolbar-menu .tab-link-active').on('click', '.toolbar-menu .tab-link-active', function (event) {
+
+            if (!first) {
+
+                app.methods.backButton(false);
 
             }
+
+            first = false;
 
         });
 
     });
 
-    $$(document).on('backbutton', function () {
+    $$(document).trigger('tab:show');
 
-        app.preloader.hide();
+    $$(document).on('swipeback:beforechange', function () {
 
-        path = app.views.current.router.currentRoute.path;
-
-        if (viewUrls.indexOf(path) !== -1) {
-
-            if (app.views.current.selector === '#view-main') {
-
-                if (app.dialog.get('.dialog') == undefined) {
-
-                    var confirmExit = app.dialog.confirm('Вы уверены что хотите закрыть приложение?', function () {
-
-                        navigator.app.exitApp();
-
-                    });
-
-                } else {
-
-                    navigator.app.exitApp();
-
-                }
-
-            } else {
-
-                $$('.toolbar-menu').find('a[href="#view-projects"]').click();
-
-            }
-
-        } else {
-
-            app.view.current.router.back();
-
-        }
+        app.methods.showToolbar();
 
     });
 

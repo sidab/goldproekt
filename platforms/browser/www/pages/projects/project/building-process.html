@@ -25,35 +25,35 @@
 
         <div class="page-content">
 
+            <div class="block block-preloader text-align-center">
 
-            <div class="block">
-
-                <div class="row">
-
-                    {{#each projectPhotos}}
-
-                        <div class="col-50 photo">
-
-                            {{#js_if "this.video.length > 0" }}
-
-                                <img data-index="{{@index}}" class="elevation-3 lazy save-to-cache" data-date="{{created_at}}" data-video="{{ video }}" data-src="http://img.youtube.com/vi/{{ video }}/0.jpg" width="100%">
-
-                                <i class="icon material-icons md-only text-color-orange">play_circle_outline</i>
-                                <i class="icon f7-icons ios-only text-color-orange">play_round</i>
-
-                            {{else}}
-
-                                <img data-index="{{@index}}" class="elevation-3 lazy lazy-fade-in" data-date="{{created_at}}" data-img="{{js "app.methods.getFullLink(this.image)" }}" data-src="{{js "app.methods.getFullLink(this.image)" }}" width="100%">
-
-                            {{/js_if}}
-
-                        </div>
-
-                    {{/each}}
-
-                </div>
+                <div class="preloader"></div>
 
             </div>
+
+            <div class="items margin row">
+
+
+            </div>
+
+            <script id="template" type="text/template7">
+
+                {#each this}
+
+                    <div class="col-50 photo lazy item margin-bottom elevation-3" data-index="{@index}" data-date="{date}" data-background="{image}">
+
+                        {#if video}
+
+                            <span class="badge color-primary">Видео</span>
+
+                        {/if}
+
+                    </div>
+
+                {/each}
+
+            </script>
+
 
         </div>
 
@@ -63,19 +63,20 @@
 
 <style scoped>
 
-
-    {{this}} .photo {
+    {{this}} .item {
+        background-repeat: no-repeat;
+        height: var(--building-process-card-height);
+        background-color: #eee;
+        background-position: center;
+        background-size: cover;
+        border-radius: 3px;
         position: relative;
-        min-height: 50px;
     }
 
-    {{this}} .photo i {
-                 width: 100%;
-                 display: block;
-                 text-align: center;
+    {{this}} .item .badge {
                  position: absolute;
-                 top: 37%;
-                 font-size: 35px;
+                 top: 5px;
+                 right: 5px;
              }
 
 </style>
@@ -89,88 +90,95 @@
         },
         methods: {
 
+            renderItems: function () {
+
+                var component = this;
+                var page = component.$el;
+
+                var template = page.find('#template').html();
+
+                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
+
+                var compiledTemplate = Template7.compile(template);
+                var context = [];
+
+                var items = component.projectPhotos;
+                var images = [];
+
+                for (var i = 0; i < items.length; i++) {
+
+                    var item = items[i];
+
+                    var id = item.id;
+                    var title = item.title;
+                    var date = item.created_at;
+                    var video;
+                    var image;
+
+                    if ( item.video == '' ) {
+
+                        image = app.methods.getFullLink(item.image);
+                        video = false;
+
+                        images.push({
+                            url: image
+                        });
+
+                    } else {
+
+                        image = 'http://img.youtube.com/vi/'+item.video+'/0.jpg';
+                        video = true;
+
+                        images.push({
+                            html: '<iframe src="https://www.youtube.com/embed/'+item.video +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                        });
+
+                    }
+
+                    context.push({
+                        id: id,
+                        title: title,
+                        date: date,
+                        image: image,
+                        video: video
+                    });
+
+                }
+
+                var html = compiledTemplate(context);
+
+                page.find('.items').html(html);
+
+                page.find('.items').removeClass('display-none');
+                page.find('.block-preloader').addClass('display-none');
+
+                var photoBrowser = app.photoBrowser.create({
+                    photos: images,
+                    theme: 'dark',
+                    routableModals: false
+                });
+
+                page.find('.item').on('click', function () {
+
+                    var index = Number($$(this).data('index'));
+
+                    photoBrowser.open(index);
+
+                });
+
+                app.lazy.create(page.find('.page-content'));
+
+            }
+
         },
         on: {
 
             pageInit: function() {
 
-                var page = this.$el;
+                var component = this;
+                var page = component.$el;
 
-                app.methods.cacheImages();
-
-                var photos = [];
-
-                page.find('img').each(function() {
-
-                    var caption = $$(this).data('title') + ' от ' + $$(this).data('date');
-
-                    if ($$(this).data('video') !== undefined) {
-
-                        photos.push({
-                            html: '<iframe src="https://www.youtube.com/embed/'+ $$(this).data('video') +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-                            caption: caption
-                        });
-
-                    } else {
-
-                        photos.push({
-                            url: $$(this).data('img'),
-                            caption: caption
-                        });
-
-                    }
-
-                });
-
-                var resizeIframe = function (photoBrowser) {
-
-                    var width = $$(photoBrowser.$el).width();
-                    var height = +width - (width / 3) +'px';
-
-                    $$(photoBrowser.$el).find('iframe').css('max-height', height);
-
-                };
-
-                var photoBrowserBuildingProcess = app.photoBrowser.create({
-                    photos: photos,
-                    theme: 'dark',
-                    routableModals: false,
-                    type: 'page',
-                    lazy: {
-                        enabled: false,
-                    },
-                    swiper: {
-                        lazy: false,
-                        zoom: {
-                            maxRatio: 15
-                        }
-                    },
-                    on: {
-                        open: function() {
-
-                            resizeIframe(this);
-
-                        },
-                        slideChange: function() {
-
-                            resizeIframe(this);
-
-                        }
-                    }
-                });
-
-                page.find('.photo').on('click', function() {
-
-                    var index = parseInt($$(this).find('img').data('index'));
-
-                    photoBrowserBuildingProcess.open(index);
-
-                });
-
-            },
-            pageAfterIn: function () {
-
-                app.lazy.load('.lazy');
+                component.renderItems();
 
             }
 

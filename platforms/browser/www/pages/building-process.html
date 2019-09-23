@@ -14,40 +14,39 @@
 
         <div class="page-content">
 
-            <div class="row no-gap">
+            <div class="block block-preloader text-align-center">
 
-                {{#each items}}
+                <div class="preloader"></div>
 
-                    <div class="col-100 tablet-50 item margin-bottom">
+            </div>
+
+            <div class="row items no-gap display-none"></div>
+
+            <script id="template" type="text/template7">
+
+                {#each this}
+
+                    <div data-index="{@index}" class="col-100 tablet-50 item">
 
                         <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
 
-                            <div class="card-header align-items-flex-end text-color-white no-padding">
+                            <div data-background="{image}" class="lazy card-header align-items-flex-end text-color-white no-padding">
 
-                                {{#js_if "this.video.length > 0"}}
+                                {#if video}
 
-                                    <div class="overlay"></div>
+                                    <span class="badge color-primary">Видео</span>
 
-                                    <img data-index="{{@index}}" data-video="{{ video }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="http://img.youtube.com/vi/{{ video }}/0.jpg" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}}" width="100%">
-
-                                    <i class="icon material-icons md-only text-color-orange">play_circle_outline</i>
-                                    <i class="icon f7-icons ios-only text-color-orange">play_round</i>
-
-                                {{else}}
-
-                                    <img data-index="{{@index}}" data-image="{{js "app.methods.getFullLink(this.image)" }}" {{#js_if "this.@index > 5"}}data-{{/js_if}}src="{{js "app.methods.getFullLink(this.image)" }}" class="{{#js_if "this.@index > 5"}}lazy{{/js_if}}" width="100%">
-
-                                {{/js_if}}
+                                {/if}
 
                             </div>
 
                             <div class="card-content card-content-padding">
 
-                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{{ title }}</b></div>
+                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{ title }</b></div>
 
                                 <div class="text-color-gray">
 
-                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{{ created_at }}</small></div>
+                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{ date }</small></div>
 
                                 </div>
 
@@ -57,9 +56,9 @@
 
                     </div>
 
-                {{/each}}
+                {/each}
 
-            </div>
+            </script>
 
         </div>
 
@@ -74,25 +73,23 @@
         padding-right: 5px;
     }
 
-    {{this}} .item .overlay {
+    {{this}} .item .badge {
                  position: absolute;
-                 z-index: 9;
-                background: rgba(0, 0, 0, 0.5);
-                 width: 100%;
-                 height: 100%;
+                 top: 20px;
+        right: 10px
              }
+
     {{this}} .item {
                  position: relative;
              }
 
-    {{this}} .item .card-header i {
-                 width: 100%;
-                 display: block;
-                 text-align: center;
-                 position: absolute;
-                 top: 45%;
-                 font-size: 35px;
-                 z-index: 99;
+    {{this}} .item .card-header {
+                 background-repeat: no-repeat;
+                 height: 230px;
+                 background-position: center;
+                 background-color: #eee;
+                 background-size: cover;
+                 border-radius: 0px;
              }
 
 </style>
@@ -105,48 +102,110 @@
 
             return {
 
-                items: function () {
-
-                    var component = this;
-
-                    if (localStorage.buildingProcess !== undefined) {
-
-                        var items = JSON.parse(localStorage.buildingProcess);
-
-                    } else {
-
-                        var items = component.loadItems();
-
-                    }
-
-                    return items;
-
-                }
-
             }
 
         },
         methods: {
+            renderItems: function(items) {
+
+                var component = this;
+                var page = this.$el;
+
+                var template = page.find('#template').html();
+
+                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
+
+                var compiledTemplate = Template7.compile(template);
+                var context = [];
+
+                var images = [];
+
+                for (var i = 0; i < items.length; i++) {
+
+                    var item = items[i];
+
+                    var id = item.id;
+                    var title = item.title;
+                    var date = item.created_at;
+                    var video;
+                    var image;
+
+                    if ( item.video == '' ) {
+
+                        image = app.methods.getFullLink(item.image);
+                        video = false;
+
+                        images.push({
+                            url: image
+                        });
+
+                    } else {
+
+                        image = 'http://img.youtube.com/vi/'+item.video+'/0.jpg';
+                        video = true;
+
+                        images.push({
+                            html: '<iframe src="https://www.youtube.com/embed/'+item.video +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                        });
+
+                    }
+
+                    context.push({
+                        id: id,
+                        title: title,
+                        date: date,
+                        video: video,
+                        image: image
+                    });
+
+                }
+
+                var html = compiledTemplate(context);
+
+                page.find('.items').html(html);
+
+                page.find('.items').removeClass('display-none');
+                page.find('.block-preloader').addClass('display-none');
+
+                var photoBrowser = app.photoBrowser.create({
+                    photos: images,
+                    theme: 'dark',
+                    routableModals: false
+                });
+
+                page.find('.item').on('click', function () {
+
+                    var index = Number($$(this).data('index'));
+
+                    photoBrowser.open(index);
+
+                });
+
+                app.lazy.create(page.find('.page-content'));
+
+            },
             loadItems: function () {
 
-                var items = false;
+                var component = this;
 
                 app.request({
                     url: encodeURI(app.params.backend + '/api/building-process'),
-                    cache: false,
-                    async: false,
                     dataType: 'json',
-                    preloader: true,
                     success: function(response) {
 
                         localStorage.buildingProcess = JSON.stringify(response);
 
-                        items = response;
+                        component.renderItems(response);
+
+                    },
+                    error: function () {
+
+                        var buildingProcess = JSON.parse(localStorage.buildingProcess);
+
+                        component.renderItems(buildingProcess);
 
                     }
                 });
-
-                return items;
 
             }
         },
@@ -154,73 +213,10 @@
 
             pageInit: function() {
 
+                var component = this;
                 var page = this.$el;
 
-                var items = [];
-
-                page.find('img').each(function() {
-
-                    if ($$(this).data('video') !== undefined) {
-
-                        items.push({
-                            html: '<iframe src="https://www.youtube.com/embed/'+ $$(this).data('video') +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-                        });
-
-                    } else {
-
-                        items.push({
-                            url: $$(this).data('image')
-                        });
-
-                    }
-
-                });
-
-                var resizeIframe = function (photoBrowser) {
-
-                    var width = $$(photoBrowser.$el).width();
-                    var height = +width - (width / 3) +'px';
-
-                    $$(photoBrowser.$el).find('iframe').css('max-height', height);
-
-                };
-
-                var photoBrowser = app.photoBrowser.create({
-                    photos: items,
-                    theme: 'dark',
-                    routableModals: false,
-                    type: 'page',
-                    lazy: {
-                        enabled: false,
-                    },
-                    swiper: {
-                        lazy: false,
-                        zoom: {
-                            maxRatio: 10
-                        }
-                    },
-                    view: app.views.get('#view-building-process'),
-                    on: {
-                        open: function() {
-
-                            resizeIframe(this);
-
-                        },
-                        slideChange: function() {
-
-                            resizeIframe(this);
-
-                        }
-                    }
-                });
-
-                page.find('.item').on('click', function() {
-
-                    var index = parseInt($$(this).find('img').data('index'));
-
-                    photoBrowser.open(index);
-
-                });
+                component.loadItems();
 
             }
 

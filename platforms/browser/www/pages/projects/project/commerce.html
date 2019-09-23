@@ -81,11 +81,7 @@
 
                             <div class="card no-margin">
 
-                                <div class="card-header align-items-flex-end text-color-white no-padding">
-
-                                    <img width="100%" class="save-to-cache" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-caption="{{floor}} этаж; Площадь: {{area}}кв.м; Цена: {{js "this.price.toLocaleString('ru-RU')"}}₽" data-img="{{js "app.methods.getFullLink(this.image)" }}" src="{{js "app.methods.getFullLink(this.image)" }}">
-
-                                </div>
+                                <div class="card-header align-items-flex-end lazy text-color-white no-padding" data-background="{{js "app.methods.getFullLink(this.image)" }}" data-image="{{js "app.methods.getFullLink(this.image)" }}" data-caption="{{floor}} этаж; Площадь: {{area}}кв.м; Цена: {{js "this.price.toLocaleString('ru-RU')"}}₽" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}"></div>
 
                                 <div class="card-content card-content-padding">
 
@@ -127,7 +123,14 @@
 </template>
 
 <style scoped>
-
+    {{this}} .item .card-header {
+        background-repeat: no-repeat;
+        height: 230px;
+        background-color: #fff;
+        background-position: center;
+        background-size: auto 100%;
+        border-radius: 0px;
+    }
 </style>
 
 <script>
@@ -155,10 +158,10 @@
 
                 var commerce = [];
 
-                page.find('img').each(function() {
+                page.find('.item').find('.card-header').each(function() {
 
                     commerce.push({
-                        url: $$(this).data('img'),
+                        url: $$(this).data('image'),
                         caption: $$(this).data('caption'),
                         floor: $$(this).data('floor'),
                         id: $$(this).parents('.item').data('id')
@@ -169,20 +172,10 @@
                 var photoBrowserCommerce = app.photoBrowser.create({
                     photos: commerce,
                     theme: 'dark',
-                    routableModals: false,
-                    type: 'page',
-                    lazy: {
-                        enabled: false,
-                    },
-                    swiper: {
-                        lazy: false,
-                        zoom: {
-                            maxRatio: 10
-                        }
-                    }
+                    routableModals: false
                 });
 
-                page.find('img').on('click', function() {
+                page.find('.item').find('.card-header').on('click', function() {
 
                     var index = parseInt($$(this).data('index'));
 

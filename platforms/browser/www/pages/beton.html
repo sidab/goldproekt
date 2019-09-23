@@ -28,76 +28,46 @@
 
                 <div class="swiper-wrapper">
 
-                    <div class="swiper-slide">
+                    <div data-index="0" class="swiper-slide swiper-lazy" data-background="img/beton/1.jpg"></div>
 
-                        <img data-index="0" src="img/beton/1.jpg" width="100%">
+                    <div data-index="1" class="swiper-slide swiper-lazy" data-background="img/beton/2.jpg"></div>
 
-                    </div>
+                    <div data-index="2" class="swiper-slide swiper-lazy" data-background="img/beton/3.jpg"></div>
 
-                    <div class="swiper-slide">
+                    <div data-index="3" class="swiper-slide swiper-lazy" data-background="img/beton/4.jpg"></div>
 
-                        <img data-index="1" src="img/beton/2.jpg" width="100%">
+                    <div data-index="4" class="swiper-slide swiper-lazy" data-background="img/beton/5.jpg"></div>
 
-                    </div>
+                    <div data-index="5" class="swiper-slide swiper-lazy" data-background="img/beton/6.jpg"></div>
 
-                    <div class="swiper-slide">
+                    <div data-index="6" class="swiper-slide swiper-lazy" data-background="img/beton/7.jpg"></div>
 
-                        <img data-index="2" src="img/beton/3.jpg" width="100%">
-
-                    </div>
-
-                    <div class="swiper-slide">
-
-                        <img data-index="3" src="img/beton/4.jpg" width="100%">
-
-                    </div>
-
-                    <div class="swiper-slide">
-
-                        <img data-index="4" src="img/beton/5.jpg" width="100%">
-
-                    </div>
-
-                    <div class="swiper-slide">
-
-                        <img data-index="5" src="img/beton/6.jpg" width="100%">
-
-                    </div>
-
-                    <div class="swiper-slide">
-
-                        <img data-index="6" src="img/beton/7.jpg" width="100%">
-
-                    </div>
-
-                    <div class="swiper-slide">
-
-                        <img data-index="7" src="img/beton/8.jpg" width="100%">
-
-                    </div>
+                    <div data-index="7" class="swiper-slide swiper-lazy" data-background="img/beton/8.jpg"></div>
 
                 </div>
 
                 <div class="swiper-pagination text-color-white"></div>
 
-                <div class="segmented segmented-raised segmented-round margin-vertical">
+                <div class="block no-margin-top">
 
-                    <button class="button button-round button-outline prev">Предыдущее</button>
-                    <button class="button button-round button-outline next">Следующее</button>
+                    <div class="segmented segmented-raised segmented-round">
+
+                        <button class="button button-round button-outline prev">Предыдущее</button>
+                        <button class="button button-round button-outline next">Следующее</button>
+
+                    </div>
 
                 </div>
 
             </div>
 
-            <small class="display-block text-align-center text-color-gray">Нажмите на фото для увелечения</small>
+            <div class="block-title block-title-large no-margin-top">Видео</div>
 
-            <div class="block-title block-title-large">Видео</div>
-
-            <div class="block block-strong text-align-center">
+            <div class="block block-iframe no-padding block-strong text-align-center">
 
                 <div class="preloader center"></div>
 
-                <iframe class="display-none" src="https://www.youtube.com/embed/9Y-NAOpdGeE?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe class="display-none" data-src="https://www.youtube.com/embed/9Y-NAOpdGeE?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
             </div>
 
@@ -212,14 +182,29 @@
 
     {{this}} .beton-slider .swiper-pagination {
                  position: relative;
-                 bottom: 0px;
+                 bottom: 35px;
              }
 
     {{this}} .beton-slider {
                  max-width: 750px;
-        margin: 0 auto
+        margin: 0 auto;
+                 overflow: hidden;
              }
 
+    {{this}} .beton-slider .swiper-slide {
+                 height: var(--iframe-and-slider-height);
+                 background-repeat: no-repeat;
+                 background-position: center;
+                 background-color: #eee;
+                 background-size: auto 100%;
+             }
+
+    {{this}} iframe {
+                 height: 100%;
+             }
+    {{this}} .block-iframe {
+                 height: var(--iframe-and-slider-height);
+             }
 </style>
 
 <script>
@@ -239,40 +224,6 @@
 
                 window.open('tel:+79887756000', '_system');
 
-            },
-            resizeIframe: function () {
-
-                var page = this.$el;
-
-                var pageContentWidth = page.find('.page-content').width();
-
-                if (pageContentWidth > 750) {
-
-                    pageContentWidth = pageContentWidth / 2;
-
-                }
-
-                var iframeHeight = +pageContentWidth - (pageContentWidth / 3) +'px';
-                var iframeBlockHeight = +pageContentWidth - (pageContentWidth / 2) +'px';
-
-                page.find('iframe').css('height', iframeHeight);
-
-                page.find('iframe').parent().css('min-height', iframeBlockHeight);
-
-                page.find('iframe').on('load', function() {
-
-                    $$(this).removeClass('display-none');
-                    $$(this).prev().hide();
-
-                });
-
-                setTimeout(function() {
-
-                    page.find('iframe').removeClass('display-none');
-                    page.find('iframe').prev().hide();
-
-                }, 5000);
-
             }
 
         },
@@ -282,14 +233,25 @@
                 var component = this;
                 var page = component.$el;
 
-                $$('#view-beton').once('tab:show', function () {
+                var images = [];
 
-                    component.resizeIframe();
+                page.find('.beton-slider').find('.swiper-slide').each(function () {
+
+                    var src = $$(this).data('background');
+
+                    images.push(src);
+
+                });
+
+                $$('#view-beton').once('tab:show', function () {
 
                     var betonSlider = new Swiper(page.find('.beton-slider'), {
                         pagination: {
                             el: '.swiper-pagination',
                             type: 'fraction'
+                        },
+                        lazy: {
+                            loadPrevNext: true
                         },
                         navigation: {
                             nextEl: '.next',
@@ -301,34 +263,20 @@
                             init: function() {
 
                                 var swiper = this.$el;
-                                var images = [];
-
-                                swiper.find('img').each(function () {
-
-                                    var src = $$(this).attr('src');
-
-                                    images.push(src);
-
-                                });
 
                                 var photoBrowser = app.photoBrowser.create({
                                     photos: images,
                                     theme: 'dark',
                                     routableModals: false,
-                                    type: 'page',
-                                    lazy: {
-                                        enabled: false,
-                                    },
                                     swiper: {
                                         lazy: false,
                                         zoom: {
                                             maxRatio: 10
                                         }
-                                    },
-                                    view: app.views.get('#view-beton'),
+                                    }
                                 });
 
-                                swiper.find('img').on('click', function() {
+                                swiper.find('.swiper-slide').on('click', function() {
 
                                     var index = parseInt($$(this).data('index'));
 
@@ -339,6 +287,25 @@
                             }
                         }
                     });
+
+                    var iframe = page.find('iframe');
+                    var src = iframe.data('src');
+
+                    iframe.attr('src', src);
+
+                    iframe.on('load', function () {
+
+                        page.find('.preloader').addClass('display-none');
+                        iframe.removeClass('display-none');
+
+                    });
+
+                    setTimeout(function () {
+
+                        page.find('.preloader').addClass('display-none');
+                        iframe.removeClass('display-none');
+
+                    }, 3000);
 
                 });
 

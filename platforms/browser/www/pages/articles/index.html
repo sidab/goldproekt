@@ -14,27 +14,31 @@
 
         <div class="page-content">
 
-            <div class="row no-gap">
+            <div class="block block-preloader text-align-center">
 
-                {{#each articles}}
+                <div class="preloader"></div>
 
-                    <div @click="openArticle({{id}})" class="col-100 tablet-50 item margin-bottom">
+            </div>
+
+            <div class="row no-gap items display-none"></div>
+
+            <script id="template" type="text/template7">
+
+                {#each this}
+
+                    <div data-id="{id}" class="col-100 tablet-50 item">
 
                         <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
 
-                            <div class="card-header align-items-flex-end text-color-white no-padding">
-
-                                <img src="{{image}}" class="save-to-cache" width="100%">
-
-                            </div>
+                            <div data-background="{image}" class="card-header lazy align-items-flex-end text-color-white no-padding"></div>
 
                             <div class="card-content card-content-padding">
 
-                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{{ title }}</b></div>
+                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{ title }</b></div>
 
                                 <div class="text-color-gray">
 
-                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{{ published_at }}</small></div>
+                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{ date }</small></div>
 
                                 </div>
 
@@ -44,9 +48,9 @@
 
                     </div>
 
-                {{/each}}
+                {/each}
 
-            </div>
+            </script>
 
         </div>
 
@@ -61,6 +65,14 @@
         padding-right: 5px;
     }
 
+    {{this}} .item .card-header {
+                 background-repeat: no-repeat;
+                 height: 230px;
+                 background-position: center;
+                 background-color: #eee;
+                 background-size: 100%;
+                 border-radius: 0px;
+             }
 
 </style>
 
@@ -72,60 +84,93 @@
 
             return {
 
-                articles: function () {
-
-                    var component = this;
-
-                    if (localStorage.articles !== undefined) {
-
-                        var articles = JSON.parse(localStorage.articles);
-
-                    } else {
-
-                        var articles = component.loadArticles();
-
-                    }
-
-                    return articles;
-
-                }
-
             }
 
         },
         methods: {
             loadArticles: function () {
 
-                var articles = false;
+                var component = this;
 
                 app.request({
                     url: encodeURI(app.params.backend + '/api/articles'),
-                    cache: false,
-                    async: false,
                     dataType: 'json',
-                    preloader: true,
                     success: function(response) {
 
                         localStorage.articles = JSON.stringify(response.data);
 
-                        articles = response.data;
+                        var articles = response.data;
+
+                        component.renderArticles(articles);
+
+                    },
+                    error: function () {
+
+                        var articles = JSON.parse(localStorage.articles);
+
+                        component.renderArticles(articles);
 
                     }
                 });
 
-                return articles;
-
             },
-            openArticle: function (id) {
+            renderArticles: function (articles) {
 
                 var component = this;
-                var articles = this.articles();
-                var article = articles.filter(function(v) {return v.id === id})[0];
+                var page = this.$el;
 
-                app.view.current.router.navigate('/articles/article', {
-                    context: article
+                var template = page.find('#template').html();
+
+                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
+
+                var compiledTemplate = Template7.compile(template);
+                var context = [];
+
+                for (var i = 0; i < articles.length; i++) {
+
+                    var article = articles[i];
+
+                    var id = article.id;
+                    var title = article.title;
+                    var description = article.content;
+                    var date = article.published_at;
+                    var image = article.image;
+
+                    context.push({
+                        id: id,
+                        title: title,
+                        date: date,
+                        description: description,
+                        image: image
+                    });
+
+                }
+
+                var html = compiledTemplate(context);
+
+                page.find('.items').html(html);
+
+                page.find('.items').removeClass('display-none');
+                page.find('.block-preloader').addClass('display-none');
+
+                app.lazy.create(page.find('.page-content'));
+
+                page.find('.item').on('click', function () {
+
+                    var articles = JSON.parse(localStorage.articles);
+                    var id = $$(this).data('id');
+
+                    var article = articles.filter(function (article) {
+
+                        return article.id == id;
+
+                    })[0];
+
+                    app.view.current.router.navigate('/articles/article', {
+                        context: article
+                    });
+
                 });
-
 
             }
         },
@@ -133,13 +178,10 @@
 
             pageInit: function() {
 
-                var page = this.$el;
+                var component = this;
+                var page = component.$el;
 
-                $$('#view-articles').on('tab:show', function () {
-
-                    app.methods.addImagesToCache(page);
-
-                });
+                component.loadArticles();
 
             }
 
