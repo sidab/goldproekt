@@ -13,7 +13,7 @@
     <preference name="ShowSplashScreenSpinner" value="false" />
     <preference name="FadeSplashScreen" value="false" />
     <preference name="SplashScreenBackgroundColor" value="0xeeeeeeee" />
-    <preference name="phonegap-version" value="cli-7.1.0" />
+    <preference name="phonegap-version" value="cli-8.0.0" />
     <preference name="android-minSdkVersion" value="19" />
     <preference name="xwalk64bit" value="true" />
     <preference name="buildArchitecture" value="arm64" />
