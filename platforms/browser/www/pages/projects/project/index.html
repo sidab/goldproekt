@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner sliding">
 
                 <div class="left">
@@ -31,11 +33,7 @@
 
                     {{#each images}}
 
-                        <div data-index="{{@index}}" class="swiper-slide swiper-lazy bg-color-white" data-background="{{ this }}">
-
-                            <div class="swiper-lazy-preloader preloader"></div>
-
-                        </div>
+                        <div data-index="{{@index}}" class="swiper-slide bg-color-white" data-image="{{ js "app.methods.getFullLink(this)" }}" style="background-image: url('{{ js "app.methods.getFullLink(this)" }}')"></div>
 
                     {{/each}}
 
@@ -61,8 +59,7 @@
 
                                         <div class="item-media">
 
-                                            <i class="icon ios-only f7-icons text-color-orange">business</i>
-                                            <i class="icon md-only material-icons text-color-orange">business</i>
+                                            <i class="icon f7-icons text-color-orange">building_2_fill</i>
 
                                         </div>
 
@@ -96,8 +93,7 @@
 
                                         <div class="item-media">
 
-                                            <i class="icon ios-only f7-icons text-color-orange">money_dollar_round</i>
-                                            <i class="icon md-only material-icons text-color-orange">monetization_on</i>
+                                            <i class="icon f7-icons text-color-orange">money_dollar_circle</i>
 
                                         </div>
 
@@ -131,8 +127,7 @@
 
                                         <div class="item-media">
 
-                                            <i class="icon ios-only f7-icons text-color-orange">images</i>
-                                            <i class="icon md-only material-icons text-color-orange">collections</i>
+                                            <i class="icon f7-icons text-color-orange">photos</i>
 
                                         </div>
 
@@ -257,8 +252,7 @@
 
                 <div class="block block-strong no-margin-bottom location">
 
-                    <i class="icon material-icons md-only">place</i>
-                    <i class="icon f7-icons ios-only">placemark</i>
+                    <i class="icon f7-icons">placemark</i>
                     <span class="padding-left">{{location}}</span>
 
                 </div>
@@ -396,9 +390,6 @@
                         el: '.swiper-pagination',
                         type: 'fraction'
                     },
-                    lazy: {
-                      loadPrevNext: true
-                    },
                     on: {
                         init: function() {
 
@@ -422,7 +413,7 @@
                     }
                 });
 
-                iframeLoadTimeout = setTimeout(function () {
+                component.iframeLoadTimeout = setTimeout(function () {
 
                     page.find('.block-iframe').each(function () {
 
@@ -483,7 +474,7 @@
                 var component = this;
                 var page = component.$el;
 
-                iframeLoadTimeout = setTimeout(function () {
+                component.iframeLoadTimeout = setTimeout(function () {
 
                     page.find('.block-iframe').each(function () {
 
@@ -514,7 +505,7 @@
             },
             pageBeforeOut: function () {
 
-                clearTimeout(iframeLoadTimeout);
+                clearTimeout(component.iframeLoadTimeout);
 
             }
 

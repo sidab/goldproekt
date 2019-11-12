@@ -2,11 +2,19 @@
 
     <div class="page" data-name="building-process">
 
-        <div class="navbar">
+        <div class="navbar navbar-large navbar-large-transparent">
+
+            <div class="navbar-bg"></div>
 
             <div class="navbar-inner sliding">
 
                 <div class="title">Ход строительства</div>
+
+                <div class="title-large">
+
+                    <div class="title-large-text">Ход строительства</div>
+
+                </div>
 
             </div>
 
@@ -14,51 +22,55 @@
 
         <div class="page-content">
 
-            <div class="block block-preloader text-align-center">
+            {{#if items}}
 
-                <div class="preloader"></div>
+                <div class="row items no-gap">
 
-            </div>
+                    {{#each items}}
 
-            <div class="row items no-gap display-none"></div>
+                        <div data-index="{{@index}}" class="col-100 medium-50 item">
 
-            <script id="template" type="text/template7">
+                            <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
 
-                {#each this}
+                                <div style="background-image: url('{{image}}')" class="card-header align-items-flex-end text-color-white no-padding">
 
-                    <div data-index="{@index}" class="col-100 tablet-50 item">
+                                    {{#if video}}
 
-                        <a href="#" class="display-block card item-inner elevation-hover-10 elevation-5">
+                                        <span class="badge color-primary">Видео</span>
 
-                            <div data-background="{image}" class="lazy card-header align-items-flex-end text-color-white no-padding">
-
-                                {#if video}
-
-                                    <span class="badge color-primary">Видео</span>
-
-                                {/if}
-
-                            </div>
-
-                            <div class="card-content card-content-padding">
-
-                                <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{ title }</b></div>
-
-                                <div class="text-color-gray">
-
-                                    <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{ date }</small></div>
+                                    {{/if}}
 
                                 </div>
 
-                            </div>
+                                <div class="card-content card-content-padding">
 
-                        </a>
+                                    <div class="item-title"><b class="block-title block-title-medium no-margin-horizontal">{{ title }}</b></div>
 
-                    </div>
+                                    <div class="text-color-gray">
 
-                {/each}
+                                        <div><i class="icon material-icons md-only">calendar</i><i class="icon f7-icons ios-only">calendar</i><small>{{ date }}</small></div>
 
-            </script>
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        </div>
+
+                    {{/each}}
+
+                </div>
+
+            {{else}}
+
+                <div class="block block-preloader text-align-center">
+
+                    <div class="preloader"></div>
+
+                </div>
+
+            {{/if}}
 
         </div>
 
@@ -106,87 +118,11 @@
 
         },
         methods: {
-            renderItems: function(items) {
-
-                var component = this;
-                var page = this.$el;
-
-                var template = page.find('#template').html();
-
-                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
-
-                var compiledTemplate = Template7.compile(template);
-                var context = [];
-
-                var images = [];
-
-                for (var i = 0; i < items.length; i++) {
-
-                    var item = items[i];
-
-                    var id = item.id;
-                    var title = item.title;
-                    var date = item.created_at;
-                    var video;
-                    var image;
-
-                    if ( item.video == '' ) {
-
-                        image = app.methods.getFullLink(item.image);
-                        video = false;
-
-                        images.push({
-                            url: image
-                        });
-
-                    } else {
-
-                        image = 'http://img.youtube.com/vi/'+item.video+'/0.jpg';
-                        video = true;
-
-                        images.push({
-                            html: '<iframe src="https://www.youtube.com/embed/'+item.video +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
-                        });
-
-                    }
-
-                    context.push({
-                        id: id,
-                        title: title,
-                        date: date,
-                        video: video,
-                        image: image
-                    });
-
-                }
-
-                var html = compiledTemplate(context);
-
-                page.find('.items').html(html);
-
-                page.find('.items').removeClass('display-none');
-                page.find('.block-preloader').addClass('display-none');
-
-                var photoBrowser = app.photoBrowser.create({
-                    photos: images,
-                    theme: 'dark',
-                    routableModals: false
-                });
-
-                page.find('.item').on('click', function () {
-
-                    var index = Number($$(this).data('index'));
-
-                    photoBrowser.open(index);
-
-                });
-
-                app.lazy.create(page.find('.page-content'));
-
-            },
             loadItems: function () {
 
                 var component = this;
+                var page = component.$el;
+                var app = component.$app;
 
                 app.request({
                     url: encodeURI(app.params.backend + '/api/building-process'),
@@ -195,14 +131,78 @@
 
                         localStorage.buildingProcess = JSON.stringify(response);
 
-                        component.renderItems(response);
-
                     },
-                    error: function () {
+                    complete: function () {
 
                         var buildingProcess = JSON.parse(localStorage.buildingProcess);
 
-                        component.renderItems(buildingProcess);
+                        var items = [];
+                        var images = [];
+
+                        for (var i = 0; i < buildingProcess.length; i++) {
+
+                            var item = buildingProcess[i];
+
+                            var id = item.id;
+                            var title = item.title;
+                            var date = item.created_at;
+                            var video;
+                            var image;
+
+                            if ( item.video == '' ) {
+
+                                image = app.methods.getFullLink(item.image);
+                                video = false;
+
+                                images.push({
+                                    url: image
+                                });
+
+                            } else {
+
+                                image = 'http://img.youtube.com/vi/'+item.video+'/0.jpg';
+                                video = true;
+
+                                images.push({
+                                    html: '<iframe src="https://www.youtube.com/embed/'+item.video +'?modestbranding=1&rel=0&autohide=1&showinfo=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>',
+                                });
+
+                            }
+
+                            items.push({
+                                id: id,
+                                title: title,
+                                date: date,
+                                video: video,
+                                image: image
+                            });
+
+                        }
+
+                        component.items = items;
+                        component.images = images;
+
+                        component.$update(function () {
+
+                            setTimeout(function () {
+
+                                var photoBrowser = app.photoBrowser.create({
+                                    photos: component.images,
+                                    theme: 'dark',
+                                    routableModals: false
+                                });
+
+                                page.find('.item').on('click', function () {
+
+                                    var index = Number($$(this).data('index'));
+
+                                    photoBrowser.open(index);
+
+                                });
+
+                            });
+
+                        });
 
                     }
                 });
@@ -216,7 +216,11 @@
                 var component = this;
                 var page = this.$el;
 
-                component.loadItems();
+                $$('#view-building-process').once('tab:show', function () {
+
+                    component.loadItems();
+
+                });
 
             }
 

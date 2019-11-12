@@ -18,6 +18,18 @@
     },
     "cordova-plugin-crosswalk-webview": {
       "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-build-architecture": {
+      "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-plugin-wkwebview-engine": {
+      "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-plugin-wkwebview-file-xhr": {
+      "PACKAGE_NAME": "com.goldproekt.com"
     }
   },
   "dependent_plugins": {}

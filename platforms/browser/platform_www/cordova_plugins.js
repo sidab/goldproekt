@@ -28,6 +28,20 @@ module.exports = [
         "id": "cordova-plugin-inappbrowser.InAppBrowserProxy",
         "pluginId": "cordova-plugin-inappbrowser",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "id": "cordova-plugin-statusbar.statusbar",
+        "pluginId": "cordova-plugin-statusbar",
+        "clobbers": [
+            "window.StatusBar"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/src/browser/StatusBarProxy.js",
+        "id": "cordova-plugin-statusbar.StatusBarProxy",
+        "pluginId": "cordova-plugin-statusbar",
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -36,7 +50,11 @@ module.exports.metadata =
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-whitelist": "1.3.3",
     "cordova-plugin-inappbrowser": "3.0.0",
-    "cordova-plugin-crosswalk-webview": "2.4.0"
+    "cordova-plugin-crosswalk-webview": "2.4.0",
+    "cordova-build-architecture": "1.0.4",
+    "cordova-plugin-statusbar": "2.4.3",
+    "cordova-plugin-wkwebview-engine": "1.2.1",
+    "cordova-plugin-wkwebview-file-xhr": "2.1.1"
 }
 // BOTTOM OF METADATA
 });

@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner sliding">
 
                 <div class="title">Наш бетонный завод</div>
@@ -28,21 +30,21 @@
 
                 <div class="swiper-wrapper">
 
-                    <div data-index="0" class="swiper-slide swiper-lazy" data-background="img/beton/1.jpg"></div>
+                    <div data-index="0" class="swiper-slide" style="background-image: url('img/beton/1.jpg')" data-image="img/beton/1.jpg"></div>
 
-                    <div data-index="1" class="swiper-slide swiper-lazy" data-background="img/beton/2.jpg"></div>
+                    <div data-index="1" class="swiper-slide" style="background-image: url('img/beton/2.jpg')" data-image="img/beton/2.jpg"></div>
 
-                    <div data-index="2" class="swiper-slide swiper-lazy" data-background="img/beton/3.jpg"></div>
+                    <div data-index="2" class="swiper-slide" style="background-image: url('img/beton/3.jpg')" data-image="img/beton/3.jpg"></div>
 
-                    <div data-index="3" class="swiper-slide swiper-lazy" data-background="img/beton/4.jpg"></div>
+                    <div data-index="3" class="swiper-slide" style="background-image: url('img/beton/4.jpg')" data-image="img/beton/4.jpg"></div>
 
-                    <div data-index="4" class="swiper-slide swiper-lazy" data-background="img/beton/5.jpg"></div>
+                    <div data-index="4" class="swiper-slide" style="background-image: url('img/beton/5.jpg')" data-image="img/beton/5.jpg"></div>
 
-                    <div data-index="5" class="swiper-slide swiper-lazy" data-background="img/beton/6.jpg"></div>
+                    <div data-index="5" class="swiper-slide" style="background-image: url('img/beton/6.jpg')" data-image="img/beton/6.jpg"></div>
 
-                    <div data-index="6" class="swiper-slide swiper-lazy" data-background="img/beton/7.jpg"></div>
+                    <div data-index="6" class="swiper-slide" style="background-image: url('img/beton/7.jpg')" data-image="img/beton/7.jpg"></div>
 
-                    <div data-index="7" class="swiper-slide swiper-lazy" data-background="img/beton/8.jpg"></div>
+                    <div data-index="7" class="swiper-slide" style="background-image: url('img/beton/8.jpg')" data-image="img/beton/8.jpg"></div>
 
                 </div>
 
@@ -237,7 +239,7 @@
 
                 page.find('.beton-slider').find('.swiper-slide').each(function () {
 
-                    var src = $$(this).data('background');
+                    var src = $$(this).data('image');
 
                     images.push(src);
 
@@ -288,26 +290,26 @@
                         }
                     });
 
-                    var iframe = page.find('iframe');
-                    var src = iframe.data('src');
+                });
 
-                    iframe.attr('src', src);
+                var iframe = page.find('iframe');
+                var src = iframe.data('src');
 
-                    iframe.on('load', function () {
+                iframe.attr('src', src);
 
-                        page.find('.preloader').addClass('display-none');
-                        iframe.removeClass('display-none');
+                iframe.on('load', function () {
 
-                    });
-
-                    setTimeout(function () {
-
-                        page.find('.preloader').addClass('display-none');
-                        iframe.removeClass('display-none');
-
-                    }, 3000);
+                    page.find('.preloader').addClass('display-none');
+                    iframe.removeClass('display-none');
 
                 });
+
+                setTimeout(function () {
+
+                    page.find('.preloader').addClass('display-none');
+                    iframe.removeClass('display-none');
+
+                }, 3000);
 
             }
 

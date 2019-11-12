@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner">
 
                 <div class="left">
@@ -67,7 +69,7 @@
 
             {{#js_if "this.korpus.length > 0"}}
 
-                <div class="korpus lazy" data-background="{{js "app.methods.getFullLink(this.korpus)"}}"></div>
+                <div class="korpus" data-image="{{js "app.methods.getFullLink(this.korpus)"}}" style="background-image: url('{{js "app.methods.getFullLink(this.korpus)"}}')"></div>
 
             {{/js_if}}
 
@@ -87,11 +89,11 @@
 
                     {{#each apartaments}}
 
-                        <div class="col-100 desktop-33 tablet-50 margin-bottom item" data-id="{{id}}">
+                        <div class="col-100 large-33 medium-50 margin-bottom item" data-id="{{id}}">
 
                             <div class="card no-margin">
 
-                                <div class="card-header lazy align-items-flex-end text-color-white no-padding" data-image="{{js "app.methods.getFullLink(this.image)" }}" data-background="{{js "app.methods.getFullLink(this.image)" }}" data-caption="{{rooms}} комнатная; {{#js_if "this.korpus.length > 0"}}Корпус: {{korpus}}; {{/js_if}}Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-index="{{@index}}"></div>
+                                <div class="card-header align-items-flex-end text-color-white no-padding" data-image="{{js "app.methods.getFullLink(this.image)" }}" style="background-image: url('{{js "app.methods.getFullLink(this.image)" }}')" data-caption="{{rooms}} комнатная; {{#js_if "this.korpus.length > 0"}}Корпус: {{korpus}}; {{/js_if}}Площадь: {{area}}кв.м; Цена: {{js "(@root.apartaments_price * this.area).toLocaleString('ru-RU')"}}₽" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}" data-index="{{@index}}"></div>
 
                                 <div class="card-content card-content-padding">
 
@@ -239,7 +241,7 @@
                 });
 
                 var photoBrowserKorpus = app.photoBrowser.create({
-                    photos: [page.find('.korpus').attr('src')],
+                    photos: [page.find('.korpus').data('image')],
                     theme: 'dark',
                     type: 'standalone'
                 });

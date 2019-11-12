@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner sliding">
 
                 <div class="left">
@@ -25,35 +27,23 @@
 
         <div class="page-content">
 
-            <div class="block block-preloader text-align-center">
-
-                <div class="preloader"></div>
-
-            </div>
-
             <div class="items margin row">
 
+                {{#each items}}
 
-            </div>
+                    <div class="col-50 photo item margin-bottom elevation-3" data-index="{{@index}}" data-date="{{date}}" style="background-image: url('{{image}}')">
 
-            <script id="template" type="text/template7">
-
-                {#each this}
-
-                    <div class="col-50 photo lazy item margin-bottom elevation-3" data-index="{@index}" data-date="{date}" data-background="{image}">
-
-                        {#if video}
+                        {{#if video}}
 
                             <span class="badge color-primary">Видео</span>
 
-                        {/if}
+                        {{/if}}
 
                     </div>
 
-                {/each}
+                {{/each}}
 
-            </script>
-
+            </div>
 
         </div>
 
@@ -95,19 +85,12 @@
                 var component = this;
                 var page = component.$el;
 
-                var template = page.find('#template').html();
-
-                template = template.replace(/{/g, '{{').replace(/}/g, '}}');
-
-                var compiledTemplate = Template7.compile(template);
-                var context = [];
-
-                var items = component.projectPhotos;
+                var items = [];
                 var images = [];
 
-                for (var i = 0; i < items.length; i++) {
+                for (var i = 0; i < component.projectPhotos.length; i++) {
 
-                    var item = items[i];
+                    var item = component.projectPhotos[i];
 
                     var id = item.id;
                     var title = item.title;
@@ -135,7 +118,7 @@
 
                     }
 
-                    context.push({
+                    items.push({
                         id: id,
                         title: title,
                         date: date,
@@ -145,28 +128,26 @@
 
                 }
 
-                var html = compiledTemplate(context);
+                component.items = items;
+                component.images = images;
 
-                page.find('.items').html(html);
+                component.$update(function () {
 
-                page.find('.items').removeClass('display-none');
-                page.find('.block-preloader').addClass('display-none');
+                    var photoBrowser = app.photoBrowser.create({
+                        photos: component.images,
+                        theme: 'dark',
+                        routableModals: false
+                    });
 
-                var photoBrowser = app.photoBrowser.create({
-                    photos: images,
-                    theme: 'dark',
-                    routableModals: false
+                    page.find('.item').on('click', function () {
+
+                        var index = Number($$(this).data('index'));
+
+                        photoBrowser.open(index);
+
+                    });
+
                 });
-
-                page.find('.item').on('click', function () {
-
-                    var index = Number($$(this).data('index'));
-
-                    photoBrowser.open(index);
-
-                });
-
-                app.lazy.create(page.find('.page-content'));
 
             }
 

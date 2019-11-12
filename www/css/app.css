@@ -43,6 +43,10 @@ iframe {
     width: 100%;
 }
 
+.navbar .title-large {
+    top: 60%;
+}
+
 .photo-browser iframe {
     height: 250px;
 }

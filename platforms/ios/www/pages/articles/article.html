@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner sliding">
 
                 <div class="left">
@@ -25,7 +27,7 @@
 
         <div class="page-content">
 
-            <img src="{{ image }}"width="100%">
+            <img src="{{js "app.methods.getFullLink(this.image)"}}"width="100%">
 
             <div class="block block-title-medium">{{title}}</div>
 
@@ -35,8 +37,7 @@
 
                 <small class="text-color-gray">
 
-                    <i class="icon material-icons md-only">today</i>
-                    <i class="icon f7-icons ios-only">calendar</i>
+                    <i class="icon f7-icons">calendar</i>
                     {{ published_at }}
 
                 </small>

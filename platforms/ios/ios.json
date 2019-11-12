@@ -15,6 +15,30 @@
             {
               "xml": "<feature name=\"SplashScreen\"><param name=\"ios-package\" value=\"CDVSplashScreen\" /><param name=\"onload\" value=\"true\" /></feature>",
               "count": 1
+            },
+            {
+              "xml": "<feature name=\"StatusBar\"><param name=\"ios-package\" value=\"CDVStatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<preference name=\"StatusBarOverlaysWebView\" value=\"true\" />",
+              "count": 1
+            },
+            {
+              "xml": "<preference name=\"StatusBarStyle\" value=\"lightcontent\" />",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"CDVWKWebViewEngine\"><param name=\"ios-package\" value=\"CDVWKWebViewEngine\" /></feature>",
+              "count": 1
+            },
+            {
+              "xml": "<preference name=\"CordovaWebViewEngine\" value=\"CDVWKWebViewEngine\" />",
+              "count": 1
+            },
+            {
+              "xml": "<feature name=\"CDVWKWebViewFileXhr\"><param name=\"ios-package\" value=\"CDVWKWebViewFileXhr\" /><param name=\"onload\" value=\"true\" /></feature>",
+              "count": 1
             }
           ]
         }
@@ -22,17 +46,29 @@
     }
   },
   "installed_plugins": {
+    "cordova-build-architecture": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
     "cordova-plugin-crosswalk-webview": {
-      "PACKAGE_NAME": "com.goldproekt.com"
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
     "cordova-plugin-inappbrowser": {
-      "PACKAGE_NAME": "com.goldproekt.com"
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
     "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.goldproekt.com"
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     },
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.goldproekt.com"
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "cordova-plugin-wkwebview-engine": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
+    },
+    "cordova-plugin-wkwebview-file-xhr": {
+      "PACKAGE_NAME": "$(PRODUCT_BUNDLE_IDENTIFIER)"
     }
   },
   "dependent_plugins": {},
@@ -53,12 +89,64 @@
       "clobbers": [
         "navigator.splashscreen"
       ]
+    },
+    {
+      "id": "cordova-plugin-statusbar.statusbar",
+      "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+      "pluginId": "cordova-plugin-statusbar",
+      "clobbers": [
+        "window.StatusBar"
+      ]
+    },
+    {
+      "id": "cordova-plugin-wkwebview-engine.ios-wkwebview-exec",
+      "file": "plugins/cordova-plugin-wkwebview-engine/src/www/ios/ios-wkwebview-exec.js",
+      "pluginId": "cordova-plugin-wkwebview-engine",
+      "clobbers": [
+        "cordova.exec"
+      ]
+    },
+    {
+      "id": "cordova-plugin-wkwebview-engine.ios-wkwebview",
+      "file": "plugins/cordova-plugin-wkwebview-engine/src/www/ios/ios-wkwebview.js",
+      "pluginId": "cordova-plugin-wkwebview-engine",
+      "clobbers": [
+        "window.WkWebView"
+      ]
+    },
+    {
+      "id": "cordova-plugin-wkwebview-file-xhr.formdata-polyfill",
+      "file": "plugins/cordova-plugin-wkwebview-file-xhr/src/www/ios/formdata-polyfill.js",
+      "pluginId": "cordova-plugin-wkwebview-file-xhr",
+      "runs": true
+    },
+    {
+      "id": "cordova-plugin-wkwebview-file-xhr.xhr-polyfill",
+      "file": "plugins/cordova-plugin-wkwebview-file-xhr/src/www/ios/xhr-polyfill.js",
+      "pluginId": "cordova-plugin-wkwebview-file-xhr",
+      "runs": true
+    },
+    {
+      "id": "cordova-plugin-wkwebview-file-xhr.fetch-bootstrap",
+      "file": "plugins/cordova-plugin-wkwebview-file-xhr/src/www/ios/fetch-bootstrap.js",
+      "pluginId": "cordova-plugin-wkwebview-file-xhr",
+      "runs": true
+    },
+    {
+      "id": "cordova-plugin-wkwebview-file-xhr.fetch-polyfill",
+      "file": "plugins/cordova-plugin-wkwebview-file-xhr/src/www/ios/whatwg-fetch-2.0.3.js",
+      "pluginId": "cordova-plugin-wkwebview-file-xhr",
+      "runs": true
     }
   ],
   "plugin_metadata": {
+    "cordova-build-architecture": "1.0.4",
     "cordova-plugin-crosswalk-webview": "2.4.0",
     "cordova-plugin-inappbrowser": "3.0.0",
     "cordova-plugin-splashscreen": "5.0.2",
-    "cordova-plugin-whitelist": "1.3.3"
+    "cordova-plugin-statusbar": "2.4.3",
+    "cordova-plugin-whitelist": "1.3.3",
+    "cordova-plugin-wkwebview-engine": "1.2.1",
+    "cordova-plugin-wkwebview-file-xhr": "2.1.1"
   }
 }

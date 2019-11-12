@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'ios',
-    version: 2.0,
+    version: 3.0,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -19,25 +19,38 @@ var app = new Framework7({
         fastClicks: true
     },
     view: {
-        animate: false,
+        animate: true,
         iosDynamicNavbar: false,
-        //iosPageLoadDelay: 100,
         //mdPageLoadDelay: 100,
-        stackPages: true
+        stackPages: true,
+        preloadPreviousPage: false,
+        removeElements: false
     },
     lazy: {
         threshold: 1500
     },
     photoBrowser: {
         backLinkText: 'Закрыть',
-        navbarOfText: 'из'
+        navbarOfText: 'из',
+        popupCloseLinkText: 'Закрыть',
+        swiper: {
+            lazy: {
+                enabled: false
+            }
+        }
     },
     cachedImages: [],
     toCacheImages: [],
     methods: {
         getFullLink: function (path) {
 
-            var url = app.params.backend + '/storage/app/media' + path;
+            var url = path;
+
+            if (url.indexOf('goldproekt') == -1) {
+
+                url = app.params.backend + '/storage/app/media' + path;
+
+            }
 
             var index = app.params.cachedImages.findIndex(image => image.src == url);
 
@@ -268,44 +281,6 @@ var app = new Framework7({
             app.views.current.router.back();
 
         }
-    },
-    on: {
-        init: function () {
-
-            var app = this;
-
-            app.methods.checkVersion();
-
-            localforage.iterate(function(value, key, iterationNumber) {
-
-                if (key.indexOf('http') !== -1) {
-
-                    var url = URL.createObjectURL(value)
-
-                    app.params.cachedImages.push({
-                        url: url,
-                        src: key
-                    });
-
-                }
-
-            }).then(function() {
-
-                app.emit('images:ready');
-
-            });
-
-            setInterval(function () {
-
-                if (lazyLoadInerval) {
-
-                    app.methods.cacheImages();
-
-                }
-
-            }, 5000);
-
-        }
     }
 }).init();
 
@@ -327,47 +302,74 @@ app.request.setup({
     }
 });
 
-app.on('images:ready', function () {
-
-    app.views.create('#view-projects', {
-        url: '/projects',
-        main: true
-    });
-
-    app.views.create('#view-beton', {
-        url: '/beton'
-    });
-
-    app.views.create('#view-building-process', {
-        url: '/building-process'
-    });
-
-    app.views.create('#view-articles', {
-        url: '/articles'
-    });
-
-    app.views.create('#view-contacts', {
-        url: '/contacts'
-    });
-
-});
 $$(document).on('deviceready', function () {
 
-    setTimeout(function () {
+    app.methods.checkVersion();
 
-        navigator.splashscreen.hide();
+    localforage.iterate(function(value, key, iterationNumber) {
 
-    }, 1000);
+        if (key.indexOf('http') !== -1) {
 
-    lazyLoadInerval = true;
+            var url = URL.createObjectURL(value)
+
+            app.params.cachedImages.push({
+                url: url,
+                src: key
+            });
+
+        }
+
+    }).then(function() {
+
+        app.emit('images:ready');
+
+    });
 
     setInterval(function () {
 
         if (lazyLoadInerval) {
 
-            app.lazy.load('.lazy');
+            app.methods.cacheImages();
 
         }
+
+    }, 5000);
+
+    app.on('images:ready', function () {
+
+        app.views.create('#view-projects', {
+            url: '/projects',
+            main: true
+        });
+
+        app.views.create('#view-beton', {
+            url: '/beton'
+        });
+
+        app.views.create('#view-building-process', {
+            url: '/building-process'
+        });
+
+        app.views.create('#view-articles', {
+            url: '/articles'
+        });
+
+        app.views.create('#view-contacts', {
+            url: '/contacts'
+        });
+
+    });
+
+    if (app.device.android) {
+
+        var attachFastClick = Origami.fastclick;
+        attachFastClick(document.body);
+
+    }
+
+    setTimeout(function () {
+
+        navigator.splashscreen.hide();
 
     }, 1000);
 
@@ -396,11 +398,5 @@ $$(document).on('deviceready', function () {
     });
 
     $$(document).trigger('tab:show');
-
-    $$(document).on('swipeback:beforechange', function () {
-
-        app.methods.showToolbar();
-
-    });
 
 });

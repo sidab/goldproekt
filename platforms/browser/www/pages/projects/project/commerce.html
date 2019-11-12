@@ -4,6 +4,8 @@
 
         <div class="navbar">
 
+            <div class="navbar-bg"></div>
+
             <div class="navbar-inner">
 
                 <div class="left">
@@ -77,11 +79,11 @@
 
                     {{#each commerce}}
 
-                        <div class="col-100 desktop-33 tablet-50 margin-bottom item" data-id="{{id}}">
+                        <div class="col-100 large-33 medium-50 margin-bottom item" data-id="{{id}}">
 
                             <div class="card no-margin">
 
-                                <div class="card-header align-items-flex-end lazy text-color-white no-padding" data-background="{{js "app.methods.getFullLink(this.image)" }}" data-image="{{js "app.methods.getFullLink(this.image)" }}" data-caption="{{floor}} этаж; Площадь: {{area}}кв.м; Цена: {{js "this.price.toLocaleString('ru-RU')"}}₽" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}"></div>
+                                <div class="card-header align-items-flex-end text-color-white no-padding" style="background-image: url('{{js "app.methods.getFullLink(this.image)" }}')" data-image="{{js "app.methods.getFullLink(this.image)" }}" data-caption="{{floor}} этаж; Площадь: {{area}}кв.м; Цена: {{js "this.price.toLocaleString('ru-RU')"}}₽" data-index="{{@index}}" data-floor="{{js "app.methods.getFullLink(this.floor_image)" }}"></div>
 
                                 <div class="card-content card-content-padding">
 
@@ -154,8 +156,6 @@
                 var component = this;
                 var page = this.$el;
 
-                app.methods.cacheImages();
-
                 var commerce = [];
 
                 page.find('.item').find('.card-header').each(function() {
@@ -171,8 +171,7 @@
 
                 var photoBrowserCommerce = app.photoBrowser.create({
                     photos: commerce,
-                    theme: 'dark',
-                    routableModals: false
+                    theme: 'dark'
                 });
 
                 page.find('.item').find('.card-header').on('click', function() {
@@ -201,8 +200,7 @@
 
                 var photoBrowserCommerceFloor = app.photoBrowser.create({
                     photos: commerceFloor,
-                    theme: 'dark',
-                    routableModals: false
+                    theme: 'dark'
                 });
 
                 page.find('.floor-image').on('click', function() {
