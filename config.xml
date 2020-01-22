@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.goldproekt.com" version="3.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.goldproekt.com" version="3.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Голд Проект</name>
     <description>
         Приложение строительной компании Голд Проект.
@@ -15,9 +15,9 @@
     <preference name="SplashScreenBackgroundColor" value="0xeeeeeeee" />
     <preference name="phonegap-version" value="cli-9.0.0" />
     <preference name="android-minSdkVersion" value="19" />
-    <preference name="xwalk64bit" value="true" />
+    <!--<preference name="xwalk64bit" value="true" />
     <preference name="buildArchitecture" value="arm64" />
-    <preference name="xwalkMultipleApk" value="true" />
+    <preference name="xwalkMultipleApk" value="true" />-->
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#f99942" />
     <feature name="CDVWKWebViewEngine">
@@ -75,6 +75,7 @@
     <plugin name="cordova-plugin-whitelist" spec="~1.3.3" />
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
-    <plugin name="cordova-plugin-crosswalk-webview" spec="2.4.0" />
-    <plugin name="cordova-build-architecture" spec="https://github.com/MBuchalik/cordova-build-architecture.git#v1.0.4" />
+    <plugin name="cordova-plugin-crosswalk-webview-arm"/>
+    <!--<plugin name="cordova-plugin-crosswalk-webview" spec="2.4.0" />
+    <plugin name="cordova-build-architecture" spec="https://github.com/MBuchalik/cordova-build-architecture.git#v1.0.4" />-->
 </widget>

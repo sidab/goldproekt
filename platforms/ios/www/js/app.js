@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'ios',
-    version: 3.0,
+    version: 3.1,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -23,7 +23,7 @@ var app = new Framework7({
         iosDynamicNavbar: false,
         //mdPageLoadDelay: 100,
         stackPages: true,
-        preloadPreviousPage: false,
+        preloadPreviousPage: true,
         removeElements: false
     },
     lazy: {

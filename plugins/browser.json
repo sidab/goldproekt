@@ -30,6 +30,9 @@
     },
     "cordova-plugin-wkwebview-file-xhr": {
       "PACKAGE_NAME": "com.goldproekt.com"
+    },
+    "cordova-plugin-crosswalk-webview-arm": {
+      "PACKAGE_NAME": "com.goldproekt.com"
     }
   },
   "dependent_plugins": {}
