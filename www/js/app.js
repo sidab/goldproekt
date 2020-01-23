@@ -4,7 +4,7 @@ var app = new Framework7({
     root: '#app',
     name: 'Голд Проект',
     theme: 'ios',
-    version: 3.2,
+    version: 3.3,
     routes: routes,
     backend: 'https://goldproekt.com',
     dialog: {
@@ -76,6 +76,19 @@ var app = new Framework7({
             } else {
 
                 return price;
+
+            }
+
+        },
+        onesignal: function () {
+
+            try {
+
+                window.plugins.OneSignal.startInit('192f8969-0212-4944-a22f-9d92497f30f4').endInit();
+
+            } catch (error) {
+
+                console.log(error);
 
             }
 
@@ -305,6 +318,8 @@ app.request.setup({
 $$(document).on('deviceready', function () {
 
     app.methods.checkVersion();
+
+    app.methods.onesignal();
 
     localforage.iterate(function(value, key, iterationNumber) {
 

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.goldproekt.com" version="3.2" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+<widget id="com.goldproekt.com" version="3.3" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>Голд Проект</name>
     <description>
         Приложение строительной компании Голд Проект.
@@ -76,6 +76,7 @@
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="3.0.0" />
     <plugin name="cordova-plugin-crosswalk-webview-arm"/>
+    <plugin name="onesignal-cordova-plugin" spec="2.8.2" />
     <!--<plugin name="cordova-plugin-crosswalk-webview" spec="2.4.0" />
     <plugin name="cordova-build-architecture" spec="https://github.com/MBuchalik/cordova-build-architecture.git#v1.0.4" />-->
 </widget>
